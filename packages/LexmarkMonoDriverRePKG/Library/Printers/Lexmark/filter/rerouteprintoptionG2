@@ -1,0 +1,569 @@
+#! /usr/bin/perl
+#	psoptionreroute - Entry point to PS printpath
+
+use URI::Escape;
+use File::Basename;
+#use POSIX qw(tmpnam);
+use File::Temp qw(tmpnam);
+use File::Basename;
+use Env qw($TMPDIR);
+
+$panther = 7.0;
+$osversion = `/usr/sbin/sysctl -n kern.osrelease`;
+
+#Parse the required PPD file
+$Tray="";
+$OutputBin="";
+$Direction="";
+$LexManualBooklet="false";
+$ppdpath = $ENV{'PPD'};
+$DefaultDuplexValue="";
+$ppdbreak="";
+$Duplex="Duplex=None";
+
+open FILE, "$ppdpath" or die "Could not open $ppdpath : $!";
+while (<FILE>) 
+{
+    if ( $_ =~ m/\*LXSupportManualDuplex/i )
+    {
+        ($Keyword, $Value) = split(/:/);
+        if ( $Value =~ m/False/i )
+        {
+            last;
+        }
+    }
+    
+    if ( $_ =~ m/\*LexManualBooklet/i )
+    {
+	    ($Keyword, $Tray, $OutputBin, $Direction) = split(/ /);
+		$LexManualBooklet="true";
+		$Tray =~ tr/"//d;
+        $OutputBin =~ tr/"`//d;
+        $OutputBin =~ s/^\s+|\s+$//g;
+        $Direction =~ tr/"//d;
+        $Direction =~ s/^\s+|\s+$//g;
+        $ppdbreak .= "Y";
+    }
+    elsif ( $_ =~ m/\*DefaultDuplex:/i )
+    {
+    	($Keyword, $DefaultDuplexValue) = split(/ /);
+        $DefaultDuplexValue =~ tr/"`//d;
+        $DefaultDuplexValue =~ s/^\s+|\s+$//g;
+        $ppdbreak .= "Y";
+    }
+    
+    if($ppdbreak =~ m/YY/i){
+        last;
+    }
+}
+close FILE;
+
+$dir = dirname($0);
+($job, $user, $title, $copies, $options, $fname) = @ARGV;
+$fname = "" unless(defined($fname));
+
+$title =~ tr/"`/ /d;
+$options =~ tr/"`/ /d;
+
+
+$build = $ARGV[0];
+if($build eq "-v")
+{
+	$version = "3.5";
+	$versID = "Version = $version";
+	print "$versID\n";
+	exit 0;
+}
+
+# --------------------------------------------
+#  use the lines below to record the options passed by CUPS to this filter
+#  applicable in 10.6 OS and below (no sandboxing)
+# --------------------------------------------
+# open logFile, ">/tmp/arguments_log";
+# foreach(@ARGV)
+# {
+# print logFile "$_";
+# print logFile "\n";	
+# }
+# close logFile;
+# --------------------------------------------
+
+# --------------------------------------------
+# use the liens below to save the PS file provided by CUPS before it enters
+# this filter
+# applicable in 10.6 OS and below (no sandboxing)
+# --------------------------------------------
+# $host;
+# while($hostTmp = <STDIN>)
+# {
+# 	$host .= $hostTmp;
+# }
+# $filename = "";
+# if (-e "/tmp/jobFile")
+# {
+# 	$filename = ">/tmp/jobFile1";
+# }
+# else
+# {
+# 	$filename = ">/tmp/jobFile";
+# }
+# open jobFile, $filename;
+# print jobFile "$host";
+# close jobFile;
+# --------------------------------------------
+
+
+$title = @ARGV[2];
+$title =~ s/"/'/gi;
+$title =~ s/\\/_/gi;
+
+$psfilter = "pstopsprinterG2";
+$rendererFilter = "rendererG2.bundle/Contents/MacOS/rendererG2";
+
+if($LexManualBooklet eq "true")
+{
+   $options .= " LexManualDuplex=true";
+}
+
+$options =~ s/ noLXBookletFold/ /;
+$options =~ s/LXPosterEnablePS.False/noLXPosterEnablePS/;
+$rendererOption = "";
+
+if($options =~ m/ Duplex=None/i)
+{
+	$Duplex="Duplex=None";
+}
+elsif($options =~ m/ Duplex=DuplexNoTumble/i)
+{
+	$Duplex="Duplex=DuplexNoTumble";
+}
+elsif($options =~ m/ Duplex=DuplexTumble/i)
+{
+    $Duplex="Duplex=DuplexTumble";
+}
+elsif(($DefaultDuplexValue =~ m/DuplexNoTumble/i) || ($DefaultDuplexValue =~ m/DuplexTumble/i))
+{
+	$Duplex="Duplex=$DefaultDuplexValue";
+}
+
+if ($options =~ m / LXPosterEnablePS/) {
+    $size = ($options =~ m/ LXPosterSize=PosterSize(\d+)/) ? "poster-size=$1" : "poster-size=2";
+	$overlap = ($options =~ m/ LXPosterOverlap=PosterOverlap(\d+\.\d+)/) ? "overlap=$1" : "";
+	$crop = ($options =~ m/ LXPosterCrop/) ? 'cropmarks=1' : 'cropmarks=0';
+    $landscape = 'landscape-orientation=0';
+	$options =~ s/ number-up=\d+/ /;
+	$options =~ s/ com.apple.print.PrintSettings.PMDuplexing..n.=\d+/ /;
+	$options =~ s/\bpage.border=\w+.thick\b//;
+	$options =~ s/\bpage.border=\w+\b//;
+	$options =~ s/ com.apple.print.PrintSettings.PMBorder..b./ nocom.apple.print.PrintSettings.PMBorder..b./;
+	$options .= " com.apple.print.PrintSettings.PMLayoutDirection..n.=1" unless ($options =~ s/ com.apple.print.PrintSettings.PMLayoutDirection..n.=[^ ]/ com.apple.print.PrintSettings.PMLayoutDirection..n.=1/);
+	$options .= " LexBlankPage" unless ($options =~ s/ noLexBlankPage/ LexBlankPage/ || $options =~ s/ LexBlankPage=PrinterS/ LexBlankPage/);
+	$options =~ s/ LexMirror/ noLexMirror/;
+	$pagesetup = 'pagesetup=' . 0;
+	if($options =~ m/ page-set=odd /)
+	{
+		$pagesetup = 'pagesetup=' . 1;
+		$options =~ s/\bpage-set=odd\b/ /
+	}
+	if($options =~ m/ page-set=even /)
+	{
+		$pagesetup = 'pagesetup=' . 2;
+		$options =~ s/\bpage-set=even\b/ /
+	}
+
+    if($options =~ m/ orientation-requested=5 /)
+    {
+        $landscape = 'landscape-orientation=270';
+        $options =~ s/ orientation-requested=5 / orientation-requested=3/;
+    }
+    elsif($options =~ m/ orientation-requested=4 /)
+    {
+        $landscape = 'landscape-orientation=90';
+        $options =~ s/ orientation-requested=4 / orientation-requested=3/;
+    }
+
+    $rtlon = "";
+
+    if(($options =~ m/ LXDocumentReadingOrder=LXRightToLeft /))
+    {
+       $rtlon = 'rtl=true';
+    }
+    else
+    {
+       $rtlon = 'rtl=';
+    }
+
+	do {$tmpname = cupstmpnam()} until ! -e $tmpname;
+	do {$tmpname2 = cupstmpnam()} until ! -e $tmpname2;
+	$options2 = "";
+	$options2 .= $options;
+	$options2 =~ s/\borientation-requested=[45]\b/ /;
+	$posterOn = 'poster=true';
+	$rendererOption .= "$size $overlap $crop $pagesetup $rtlon $landscape $posterOn input=$tmpname output=$tmpname2";
+
+    exec qq{/usr/libexec/cups/filter/pstopdffilter "$job" "$user" "$title" "$copies" "$options" $fname > $tmpname; $dir/$rendererFilter $rendererOption; /usr/libexec/cups/filter/cgpdftops "$job" "$user" "$title" "$copies" "$options"  $tmpname2 | /usr/libexec/cups/filter/pstops "$job" "$user" "$title" "$copies" "$options2" | $dir/$psfilter "$job" "$user" "$title" "$copies" "$options2"; rm $tmpname; rm $tmpname2};
+	
+} elsif (($options =~ m/ LXBookletFold/) && ($options !~ m/ LXBookletFold=PrinterS /) && ($options !~ m/ LXBookletFold=False /) ){
+        $options =~ s/ page-set=[odd|even]/ /;
+        $numberup = ($options =~ m/ number-up=(\d+)/) ? "number-up=$1" : "number-up=2";
+	$options .= " number-up=2" unless ($options =~ s/number-up=\d+/number-up=2/);
+	$options =~ s/\bpage.border=\w+.thick\b//;
+	$options =~ s/\bpage.border=\w+\b//;
+	$options =~ s/ com.apple.print.PrintSettings.PMBorder..b./ nocom.apple.print.PrintSettings.PMBorder..b./;
+	$options .= " com.apple.print.PrintSettings.PMDuplexing..n.=3" unless ($options =~ s/ com.apple.print.PrintSettings.PMDuplexing..n.=[^ ]/ com.apple.print.PrintSettings.PMDuplexing..n.=3/);
+	$options .= " com.apple.print.PrintSettings.PMLayoutDirection..n.=3" unless ($options =~ s/ com.apple.print.PrintSettings.PMLayoutDirection..n.=[^ ]/ com.apple.print.PrintSettings.PMLayoutDirection..n.=3/);
+	$options .= " number-up-layout=lrtb" unless ($options =~ s/ number-up-layout=[ ]/ number-up-layout=lrtb/ );
+	$options .= " LexBlankPage" unless ($options =~ s/ noLexBlankPage/ LexBlankPage/ || $options =~ s/ LexBlankPage=PrinterS/ LexBlankPage/);
+	if(($options =~ m/ LXMaintainSize /) || ($options =~ m/ LXMaintainSize=true /) || ($options =~ m/ LXMaintainSize=True /) || ($options =~ m/ LXMaintainOrigSize /) || ($options =~ m/ LXMaintainOrigSize=true /) || ($options =~ m/ LXMaintainOrigSize=True /))
+	{
+		if(($options =~ m/ media=Letter /) || ($options =~ m/ media=letter /) || ($options =~ m/ media=A4 /) || ($options =~ m/ media=Statement /) || ($options =~ m/ media=statement /) || ($options =~ m/ media=A5 /))
+		{
+			#$options .= " media=11x17" unless ($options =~ s/ media=[ ]/ media=11x17/ );
+			if($options =~ m/ media=Letter/)
+			{
+				$options =~ s/Letter /Tabloid /gi;
+			}
+			elsif($options =~ m/ media=letter /)
+			{
+				$options =~ s/letter /Tabloid /gi;
+			}
+			elsif($options =~ m/ media=Statement/)
+			{
+				$options =~ s/Statement /Letter /gi;
+			}
+			elsif($options =~ m/ media=statement /)
+			{
+				$options =~ s/statement /letter /gi;
+			}
+			elsif($options =~ m/ media=A5/)
+			{
+				$options =~ s/A5 /A4 /gi;
+			}
+			elsif($options =~ m/ media=A4/)
+			{
+				#$options .= " media=A3" unless ($options =~ s/ media=[ ]/ media=A3/ );
+				$options =~ s/A4 /A3 /gi;
+			}
+		}		
+	}
+	
+	#$signature = 'signature=' . 0;
+        $signature = ($options =~ m/ LexBookletSheetsPerBundle=(\d+)/) ? "signature=$1" : "signature=0";
+	if($options =~ m/ Fold=SaddleStitch /)
+	{
+		$fold = 'fold=' . 3;
+		#$options .= " Fold=BookletFold" unless ($options =~ s/ Fold=SaddleStitch/ Fold=BookletFold/);
+		#$options .= " StapleJob=Dual" unless ($options =~ s/ StapleJob=[ ]/ StapleJob=Dual/);
+		$options =~ s/ StapleJob=PrinterS/ /;
+	}
+	elsif($options =~ m/ Fold=BookletFold /)
+	{
+		$fold = 'fold=' . 2;	
+	}
+	elsif($options =~ m/ Fold=BiFold /)
+	{
+		$fold = 'fold=' . 1;	
+	}
+	elsif($options =~ m/ Fold=Booklet /)
+	{
+		$fold = 'fold=' . 0;
+		$options .= " StapleJob=FalseM" unless ($options =~ s/ StapleJob=[ ]/ StapleJob=FalseM/);
+	}
+	else 
+	{
+		$fold = 'fold=' . 0;	
+		$options .= " StapleJob=FalseM" unless ($options =~ s/ StapleJob=[ ]/ StapleJob=FalseM/);
+	}
+	$cover = "";
+
+	if(($options =~ m/ LXBookletCoverPage /) || ($options =~ m/ LXBookletCoverPage=true /) || ($options =~ m/ LXBookletCoverPage=True /))
+	{
+
+		if((($options =~ m/ LXOutsideFrontCover /) || ($options =~ m/ LXOutsideFrontCover=True /)) && !(($options =~ m/noLXOutsideFrontCover /) || ($options =~ m/LXOutsideFrontCover=false /) || ($options =~ m/LXOutsideFrontCover=False /)))
+		{
+			$cover = $cover . "y";
+		}
+		else	
+		{
+			$cover = $cover . "n";
+		}
+
+		if((($options =~ m/ LXInsideFrontCover /) || ($options =~ m/LXInsideFrontCover=True /)) && !(($options =~ m/LXInsideFrontCover=false /) || ($options =~ m/noLXInsideFrontCover /) || ($options =~ m/LXInsideFrontCover=False /)))
+		{
+			$cover = $cover . "y";
+		}
+		else
+		{
+			$cover = $cover . "n";
+		}
+
+		if((($options =~ m/ LXInsideBackCover /) || ($options =~ m/ LXInsideBackCover=True /)) && !(($options =~ m/LXInsideBackCover=false /) || ($options =~ m/noLXInsideBackCover /) || ($options =~ m/LXInsideBackCover=False /)))
+		{
+			$cover = $cover . "y";
+		}
+		else
+		{
+			$cover = $cover . "n";
+		}
+
+		if((($options =~ m/ LXOutsideBackCover /) || ($options =~ m/ LXOutsideBackCover=True /)) && !(($options =~ m/LXOutsideBackCover=false /) || ($options =~ m/noLXOutsideBackCover /) || ($options =~ m/LXOutsideBackCover=False /)))
+		{
+			$cover = $cover . "y";	
+		}
+		else
+		{
+			$cover = $cover . "n";
+		}
+	}
+
+	$cover = 'cover='. $cover;
+
+    $rtlon = "";
+
+    if(($options =~ m/ LXDocumentReadingOrder=LXRightToLeft /))
+    {
+       $rtlon = 'rtl=true';
+    }
+    else
+    {
+       $rtlon = 'rtl=';
+    }
+
+	do {$tmpname = cupstmpnam()} until ! -e $tmpname;
+	do {$tmpname2 = cupstmpnam()} until ! -e $tmpname2;
+	do {$tmpname3 = cupstmpnam()} until ! -e $tmpname3;
+	do {$tmpname4 = cupstmpnam()} until ! -e $tmpname4;
+	
+	$options2 = "";
+	$options2 .= $options;
+	$options2 =~ s/ number-up=\d+/ /;
+	$options2 .= " orientation-requested=4";
+	$options2 =~ s/\bpage.border=\w+.thick\b//;
+	$options2 =~ s/\bpage.border=\w+\b//;
+	$options2 =~ s/ com.apple.print.PrintSettings.PMBorder..b./ nocom.apple.print.PrintSettings.PMBorder..b./;
+	
+	#pstopsprinter1 needs to know the total number of pages in a booklet job. What it does is save the booklet job into temporary file, parse it afterwards to get the total number of pages.
+	#This approach is very slow particularly if there are hundreds of pages in the job. The alternative is to let booklet filter(pdfbookletorderLPD) save the total page count into temporary
+	#file, with no other data on it but just the integer representing the total page count. pstopsprinter1 will open this file and read just one integer data. There is no more time lost to
+	#saving and parsing the job file. We pass the temporary file name to pdfbookletorderLPD via -t option, and to pstopsprinter1 via LXBookletPageCountFilename key-value parameter(arv[5]).
+	$options2 .= ' LXBookletPageCountFilename='.$tmpname4;
+	$bookletOn = 'booklet=true';
+	$options4 = $options2;
+	$rendererOption .= "$signature $fold $cover $bookletOn $rtlon input=$tmpname output=$tmpname2 tmpfile=$tmpname4";
+	$options4 .= " $numberup";
+	if ($options =~ m/ LexManualDuplex=true/)
+	{
+		$rendererOption .=  " manualduplex=true trayfacing=$Tray binfacing=$OutputBin feeddirection=$Direction $numberup $Duplex";
+		$options4 .= " manualduplex=true";
+		
+	}
+
+	exec qq{/usr/libexec/cups/filter/pstopdffilter "$job" "$user" "$title" "$copies" "$options" $fname > $tmpname; $dir/$rendererFilter $rendererOption; /usr/libexec/cups/filter/cgpdftopdf "$job" "$user" "$title" "$copies" "$options" $tmpname2> $tmpname3;/usr/libexec/cups/filter/cgpdftops "$job" "$user" "$title" "$copies" "$options2" $tmpname3|/usr/libexec/cups/filter/pstops "$job" "$user" "$title" "$copies" "$options2"|$dir/$psfilter "$job" "$user" "$title" "$copies" "$options4"; rm $tmpname; rm $tmpname2; rm $tmpname3; rm $tmpname4};
+	
+}
+elsif ((($Duplex =~ m/Duplex=DuplexNoTumble/) || ($Duplex =~ m/Duplex=DuplexTumble/)) && ($options =~ m/ LexManualDuplex=true/))
+{
+	$numberup = "number-up=1";
+	$options =~ s/ number-up=\d+/ /;
+	$options =~ s/\bpage.border=\w+.thick\b//;
+	$options =~ s/\bpage.border=\w+\b//;
+	$options =~ s/ com.apple.print.PrintSettings.PMBorder..b./ nocom.apple.print.PrintSettings.PMBorder..b./;
+	$options .= " com.apple.print.PrintSettings.PMDuplexing..n.=3" unless ($options =~ s/ com.apple.print.PrintSettings.PMDuplexing..n.=[^ ]/ com.apple.print.PrintSettings.PMDuplexing..n.=3/);
+	$options .= " com.apple.print.PrintSettings.PMLayoutDirection..n.=3" unless ($options =~ s/ com.apple.print.PrintSettings.PMLayoutDirection..n.=[^ ]/ com.apple.print.PrintSettings.PMLayoutDirection..n.=3/);
+	$options .= " number-up-layout=lrtb" unless ($options =~ s/ number-up-layout=[ ]/ number-up-layout=lrtb/ );
+	$options .= " LexBlankPage" unless ($options =~ s/ noLexBlankPage/ LexBlankPage/ || $options =~ s/ LexBlankPage=PrinterS/ LexBlankPage/);
+
+	$landscape = 'landscape-orientation=0';
+	if($options =~ m/ orientation-requested=5 /)
+	{
+		$landscape = 'landscape-orientation=270';
+		$options =~ s/ orientation-requested=5 / orientation-requested=3/;
+	}
+	elsif($options =~ m/ orientation-requested=4 /)
+	{
+		$landscape = 'landscape-orientation=90';
+		$options =~ s/ orientation-requested=4 / orientation-requested=3/;
+	}
+	
+	do {$tmpname = cupstmpnam()} until ! -e $tmpname;
+	do {$tmpname2 = cupstmpnam()} until ! -e $tmpname2;
+	do {$tmpname3 = cupstmpnam()} until ! -e $tmpname3;
+	do {$tmpname4 = cupstmpnam()} until ! -e $tmpname4;
+	
+	$options .= " DefaultDuplex=$DefaultDuplexValue";
+	$options2 = "";
+	$options2 .= $options;
+	$options2 =~ s/\borientation-requested=[45]\b/ /;
+	$rendererOption .= "manualduplex=true trayfacing=$Tray binfacing=$OutputBin feeddirection=$Direction $numberup $landscape $Duplex input=$tmpname output=$tmpname2 tmpfile=$tmpname4";
+	
+	$options4 = $options2;
+	$options4 .= " $numberup LXBookletPageCountFilename=$tmpname4 manualduplex=true";
+
+	exec qq{/usr/libexec/cups/filter/pstopdffilter "$job" "$user" "$title" "$copies" "$options" $fname > $tmpname; $dir/$rendererFilter $rendererOption; /usr/libexec/cups/filter/cgpdftopdf "$job" "$user" "$title" "$copies" "$options" $tmpname2> $tmpname3;/usr/libexec/cups/filter/cgpdftops "$job" "$user" "$title" "$copies" "$options2" $tmpname3|/usr/libexec/cups/filter/pstops "$job" "$user" "$title" "$copies" "$options2"|$dir/$psfilter "$job" "$user" "$title" "$copies" "$options4"; rm $tmpname; rm $tmpname2; rm $tmpname3; rm $tmpname4};
+	
+}
+elsif (($options =~ m/ faxCoverSheet /)&&($options =~ m/ faxTo/)) 
+{
+   if ($options =~ m/ faxFromLabel/)
+   {
+      $fromtitle = uri_unescape(($options =~ m/ faxFromLabel=(\S+)/) ? "$1" : "");
+   }
+   else
+   {
+      $fromtitle = "";
+   }
+    
+    if ($options =~ m/ com.apple.print.JobInfo.PMJobOwner/)
+    {
+        $modOptions=$options;
+        $modOptions =~ s/\\\s/<RePlSpAcE>/g; #replace "\ " into some string then replace back to space
+        $from = ($modOptions =~ m/ com.apple.print.JobInfo.PMJobOwner=(\S+)/) ? "$1" : "";
+        $from =~ s/<RePlSpAcE>/ /g;
+        $from = uri_unescape($from);
+    }
+    else
+    {
+        $from = $ARGV[1];
+    }
+   
+   if ($options =~ m/ faxTo/)
+   {
+       $modOptions=$options;
+       $modOptions =~ s/\\\s/<RePlSpAcE>/g; #replace "\ " into some string then replace back to space
+       $faxto = ($modOptions =~ m/ faxTo=(\S+)/) ? "$1" : "";
+       $faxto =~ s/<RePlSpAcE>/ /g;
+       $faxto = uri_unescape($faxto);
+   }
+   else
+   {
+      $faxto = "";
+   }
+   
+   if ($options =~ m/ faxToLabel/)
+   {
+      $faxToLabel = uri_unescape(($options =~ m/ faxToLabel=(\S+)/) ? "$1" : "");
+   }
+   else
+   {
+      $faxToLabel = "";
+   }
+   
+   if ($options =~ m/ faxSubject/)
+   {
+      $faxSubject = uri_unescape(($options =~ m/ faxSubject=(\S+)/) ? "$1" : "");
+   }
+   else
+   {
+      $faxSubject = "";
+   }
+   
+   if ($options =~ m/ faxSubjectLabel/)
+   {
+      $faxSubjectLabel = uri_unescape(($options =~ m/ faxSubjectLabel=(\S+)/) ? "$1" : "");
+   }
+   else
+   {
+      $faxSubjectLabel = "";
+   }
+  
+   if ($options =~ m/ faxDateLabel/)
+   {
+      $faxDateLabel = uri_unescape(($options =~ m/ faxDateLabel=(\S+)/) ? "$1" : "");
+   }
+   else
+   {
+      $faxDateLabel = "";
+   }
+    
+   if ($options =~ m/ faxSheetsLabel/)
+   {
+      $faxSheetsLabel = uri_unescape(($options =~ m/ faxSheetsLabel=(\S+)/) ? "$1" : "");
+   }
+   else
+   {
+      $faxSheetsLabel = "";
+   }
+  
+   if ($options =~ m/ faxCoverSheetMessage/)
+   {
+      $faxCoverSheetMessage = uri_unescape(($options =~ m/ faxCoverSheetMessage=(\S+)/) ? "$1" : "");
+   }
+   else
+   {
+      $faxCoverSheetMessage = "";
+   }
+    
+
+    
+    if($options =~ m/ orientation-requested=5 /)
+    {
+        $landscape = 'landscape-orientation=270';
+        $options =~ s/ orientation-requested=5 / orientation-requested=3/;
+    }
+    elsif($options =~ m/ orientation-requested=4 /)
+    {
+        $landscape = 'landscape-orientation=90';
+        $options =~ s/ orientation-requested=4 / orientation-requested=3/;
+    }
+    elsif($options =~ m/ orientation-requested=6 /)
+    {
+        $rotate = 'mirror=vertical';
+        $options3 =~ s/ orientation-requested=6/ /;
+    }
+
+    if($options =~ m/ mirror /)
+    {
+        $rotate = 'mirror=horizontal';
+    }
+   $options3 = "";
+   $options3 .= $options;
+
+   do {$tmpname5 = cupstmpnam()} until ! -e $tmpname5;
+   do {$tmpname6 = cupstmpnam()} until ! -e $tmpname6;
+    
+   $faxcoveroptions = "from-title=\'$fromtitle\' from=\'$from\' to=\'$faxto\' to-title=\'$faxToLabel\' subject=\'$faxSubject\' subject-title=\'$faxSubjectLabel\' date-title=\'$faxDateLabel\' count-title=\'$faxSheetsLabel\' body=\'$faxCoverSheetMessage\' faxcover=true $landscape $rotate input=$tmpname5 output=$tmpname6";
+   
+   
+   $options3 =~ s/ number-up=\d+/ /;
+   $options3 =~ s/ mirror/ /;
+   $options3 =~ s/ faxCoverSheet / /;
+   
+   exec qq{/usr/libexec/cups/filter/pstopdffilter "$job" "$user" "$title" "$copies" "$options" $fname > $tmpname5;$dir/$rendererFilter $faxcoveroptions;/usr/libexec/cups/filter/cgpdftops "$job" "$user" "$title" "$copies" "$options3"  $tmpname6|/usr/libexec/cups/filter/pstops "$job" "$user" "$title" "$copies" "$options3"|$dir/pstopsfaxG2 "$job" "$user" "$title" "$copies" "$options3";rm $tmpname5;rm $tmpname6};
+}
+elsif (($options !~ m/ faxCoverSheet /)&&($options =~ m/ faxTo/))
+{
+  exec qq{$dir/pstopsfaxG2 "$job" "$user" "$title" "$copies" "$options"};
+} 
+elsif (($options =~ m/ HolePunch/) &&
+       (!($options =~m/ HolePunch=FalseM/)) &&
+       (!($options =~m/ HolePunch=PrinterS/)) &&
+       ($options =~ m/ LXDocumentReadingOrder=LXRightToLeft /) &&
+       (!($options =~ m/ orientation-requested=5 /)) &&
+       (!($options =~ m/ orientation-requested=4 /)))
+{
+	$rtlon = "";
+        do {$tmpname = cupstmpnam()} until ! -e $tmpname;
+	do {$tmpname2 = cupstmpnam()} until ! -e $tmpname2;
+        if($options =~ m/ LXDocumentReadingOrder=LXRightToLeft /)
+        {
+		$rtlon = 'rtl=true';
+                $holepunchOn = 'holepunch=true';
+		$rendererOption .= "$rtlon $holepunchOn input=$tmpname output=$tmpname2";
+                exec qq{/usr/libexec/cups/filter/pstopdffilter "$job" "$user" "$title" "$copies" "$options" $fname > $tmpname; $dir/$rendererFilter $rendererOption;/usr/libexec/cups/filter/cgpdftops "$job" "$user" "$title" "$copies" "$options"  $tmpname2 | /usr/libexec/cups/filter/pstops "$job" "$user" "$title" "$copies" "$options" | $dir/$psfilter "$job" "$user" "$title" "$copies" "$options";rm $tmpname; rm $tmpname2};
+	}
+        else
+        {
+       		$rtlon = 'rtl=';
+        }
+} 
+else 
+{
+	exec qq{$dir/$psfilter  "$job" "$user" "$title" "$copies" "$options" $fname};
+}
+
+sub cupstmpnam 
+{
+    $tmpn = tmpnam();
+    $base = basename($tmpn);
+    $base2 = $TMPDIR."/".$base; 
+} 

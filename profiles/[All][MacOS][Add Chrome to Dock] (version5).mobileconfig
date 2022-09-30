@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>PayloadContent</key>
+	<array>
+		<dict>
+			<key>PayloadDescription</key>
+			<string>Dock Payload</string>
+			<key>PayloadDisplayName</key>
+			<string>Dock</string>
+			<key>PayloadIdentifier</key>
+			<string>school.jamf.MDM.04a35a5b-e89a-4971-8f13-a6e5acbfa888.dock.7ac057d0-4366-46f8-9619-e5802c00f0b4</string>
+			<key>PayloadOrganization</key>
+			<string></string>
+			<key>PayloadType</key>
+			<string>com.apple.dock</string>
+			<key>PayloadUUID</key>
+			<string>7ac057d0-4366-46f8-9619-e5802c00f0b4</string>
+			<key>PayloadVersion</key>
+			<integer>1</integer>
+			<key>launchanim</key>
+			<true/>
+			<key>magnification</key>
+			<true/>
+			<key>mineffect</key>
+			<string>scale</string>
+			<key>show-recents</key>
+			<true/>
+			<key>static-apps</key>
+			<array>
+				<dict>
+					<key>tile-data</key>
+					<dict>
+						<key>file-data</key>
+						<dict>
+							<key>_CFURLString</key>
+							<string>/Applications/Google Chrome.app</string>
+							<key>_CFURLStringType</key>
+							<integer>0</integer>
+						</dict>
+						<key>file-label</key>
+						<string>Google Chrome</string>
+						<key>file-type</key>
+						<integer>1</integer>
+						<key>label</key>
+						<string>Google Chrome</string>
+					</dict>
+					<key>tile-type</key>
+					<string>file-tile</string>
+				</dict>
+			</array>
+			<key>tilesize</key>
+			<real>64</real>
+		</dict>
+	</array>
+	<key>PayloadDescription</key>
+	<string>Test add Chrome to MacOS dock without messing everything else up</string>
+	<key>PayloadDisplayName</key>
+	<string>[All][MacOS][Add Chrome to Dock] (version:5)</string>
+	<key>PayloadIdentifier</key>
+	<string>school.jamf.MDM.04a35a5b-e89a-4971-8f13-a6e5acbfa888</string>
+	<key>PayloadOrganization</key>
+	<string>St. Andrew's</string>
+	<key>PayloadScope</key>
+	<string>User</string>
+	<key>PayloadType</key>
+	<string>Configuration</string>
+	<key>PayloadUUID</key>
+	<string>1a6a48b1-328a-4df1-80df-c817172a3287</string>
+	<key>PayloadVersion</key>
+	<integer>1</integer>
+</dict>
+</plist>

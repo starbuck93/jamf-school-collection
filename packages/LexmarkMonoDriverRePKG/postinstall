@@ -1,0 +1,878 @@
+#!/usr/bin/perl -w
+
+use strict;
+use Tie::File;
+sub launchLSA();
+sub createProductDefinitionFile();
+sub Main();
+sub Install_PPDComponent;
+sub getProductDefinitionFileVersion;
+sub CheckVersion;
+sub ComparePPDVersion;
+sub getFieldValue;
+sub MakeProductDefFile;
+sub getDirectoryContent;
+sub getDuplexValue;
+sub processPPD;
+sub updatePPDDuplex;
+
+# --- constants ----
+
+my $volumeName = "Lexmark Universal Mono";
+my $volumeName1 = "Universal Mono";
+my $pkgName = "UniversalMono";
+my $vendor = "Lexmark";
+my $vendorFolder = "";
+my $manufacturerFolder = "$vendor";
+
+print("vendor: $vendor \n");
+print("vendorFolder: $vendorFolder \n");
+if (defined $vendorFolder && $vendorFolder ne '') 
+{
+	$vendor = "$vendorFolder";
+}
+print("vendor: $vendor \n");
+
+my $lexFolder    = "/Library/Printers/$vendor";
+my $userName=$ENV{"USER"};
+my $lsaArch = "armuni";
+my $koshiVersionTool = "CmdProcessor";
+my $versionToolPath = "/Library/Printers/$vendor/Versioning";
+
+# --- main ----
+launchLSA();
+createProductDefinitionFile();
+Main();
+
+use vars qw($vendor $lsaArch $ppdDest $ppdPath $currentOS $osTemp $ppdTemp $max @languages $duplexValue @locale $supportedFlag $ppdFlag);
+
+sub launchLSA()
+{
+	if (-d "/Volumes/$volumeName/$vendor Extras") {
+               if (-d "/Volumes/$volumeName/$vendor Extras/Hardware Setup Assistant.app") {
+			print "Utility Launcher application was launched.\n";
+			`sudo /usr/bin/open "/Volumes/$volumeName/$vendor Extras/Hardware Setup Assistant.app"`;
+	        }
+	        if (-d "/Volumes/$volumeName/$vendor Extras/$vendor Setup Assistant.app") {
+			print "Utility Launcher application was launched.\n";
+			`sudo /usr/bin/open "/Volumes/$volumeName/$vendor Extras/$vendor Setup Assistant.app"`;
+		}
+	}
+	if (-d "/Volumes/$volumeName1/$vendor Extras") {
+               if(-d "/Volumes/$volumeName1/$vendor Extras/Hardware Setup Assistant.app") { 
+			print "Utility Launcher application was launched.\n";
+			`sudo /usr/bin/open "/Volumes/$volumeName1/$vendor Extras/Hardware Setup Assistant.app"`;
+		}
+	       if(-d "/Volumes/$volumeName1/$vendor Extras/$vendor Setup Assistant.app") {
+			print "Utility Launcher application was launched.\n";
+			`sudo /usr/bin/open "/Volumes/$volumeName1/$vendor Extras/$vendor Setup Assistant.app"`;
+		}
+	}
+	if (-d "/Volumes/$volumeName/$vendor Extras/uni") {
+		if(-d "/Volumes/$volumeName/$vendor Extras/uni/Hardware Setup Assistant.app"){
+			print "Utility Launcher application was launched.\n";
+			`sudo /usr/bin/open "/Volumes/$volumeName/$vendor Extras/uni/Hardware Setup Assistant.app"`;
+		}
+		if(-d "/Volumes/$volumeName/$vendor Extras/uni/$vendor Setup Assistant.app") {
+			print "Utility Launcher application was launched.\n";
+			`sudo /usr/bin/open "/Volumes/$volumeName/$vendor Extras/uni/$vendor Setup Assistant.app"`;
+		}	
+	}
+}
+
+sub Main()
+{
+	my $SystemVersionPlist   = "/System/Library/CoreServices/SystemVersion.plist";
+	my $currentOSVersion  = getFieldValue("$SystemVersionPlist", "ProductVersion" );
+	$ppdPath = "/Library/Printers/PPDs/Contents/Resources";
+	my $vendorTemp = "/Library/Printers/$vendor/Temp";
+	
+	if(CheckVersion($currentOSVersion, "10.5", "<", 0, 2))
+	{
+        $ppdDest = "$ppdPath/en.lproj";
+		$osTemp = "$vendorTemp/PPDs/Tiger";
+		$ppdTemp = "$osTemp/en";
+		$currentOS = "10.4";
+        
+        `/bin/rm -rf "/Library/Printers/$vendor/PDEs/Job Routing 3.plugin"`;
+        
+		#cleanup remove other Oses
+		`/bin/rm -rf "$vendorTemp/PPDs/Leopard"`;
+        
+
+		if (-e "$vendorTemp/PDEs/10.4/JobAccounting.bundle")
+		{
+			#JobAccounting
+			InstallFile("JobAccounting.bundle", "$vendorTemp/PDEs/10.4", "/Library/Printers/$vendor/PDEs");
+			`/bin/rm -rf "$vendorTemp/PDEs"`;
+		}
+	}
+	else
+	{
+		if(CheckVersion($currentOSVersion, "10.6", "<", 0, 2))
+		{
+			$ppdDest = "$ppdPath";
+			$osTemp = "$vendorTemp/PPDs/Leopard";
+			$ppdTemp = $osTemp;
+			$currentOS = "10.5";
+            
+            `/bin/rm -rf "/Library/Printers/$vendor/PDEs/Job Routing 2.plugin"`;
+
+			#update filter permissions
+			if (-e "/Library/Printers/$vendor/filter/pdfbookletorder")
+			{	
+				`sudo chown root:wheel "/Library/Printers/$vendor/filter/pdfbookletorder"`;
+				`sudo chmod 755 "/Library/Printers/$vendor/filter/pdfbookletorder"`;
+			}
+			if (-e "/Library/Printers/$vendor/filter/pdfpostertiler")
+			{
+				`sudo chown root:wheel "/Library/Printers/$vendor/filter/pdfpostertiler"`;
+				`sudo chmod 755 "/Library/Printers/$vendor/filter/pdfpostertiler"`;
+			}
+		
+			if (-e "$vendorTemp/PDEs/10.5/JobAccounting.bundle")
+			{
+				#JobAccounting
+				InstallFile("JobAccounting.bundle", "$vendorTemp/PDEs/10.5", "/Library/Printers/$vendor/PDEs");
+				`/bin/rm -rf "$vendorTemp/PDEs"`;
+			}
+			
+			#update permission of JobAccounting.bundle
+			`sudo chown root:wheel "/Library/Printers/$vendor/PDEs/JobAccounting.bundle"`;
+			if (-e "/Library/Printers/$vendor/PDEs/JobAccounting.bundle")
+			{
+				`sudo chown -R root:wheel "/Library/Printers/$vendor/PDEs/JobAccounting.bundle"`;
+				`sudo chmod 755 "/Library/Printers/$vendor/PDEs/JobAccounting.bundle"`;
+			}
+
+			#cleanup remove other Oses
+			`/bin/rm -rf "$vendorTemp/PPDs/SnowLeopard"`;
+            `/bin/rm -rf "$vendorTemp/PPDs/Tiger"`;
+			#remove CFF
+			`/bin/rm -rf "/Library/Printers/$vendor/filter/CommandFilterEngine.bundle"`;
+			#remove filters not needed for 10.5 OS
+			if (-e "/Library/Printers/$vendor/filter/pdfbookletorderLPD")
+			{
+				`/bin/rm -rf "/Library/Printers/$vendor/filter/pdfbookletorderLPD"`;
+			}
+			if (-e "/Library/Printers/$vendor/filter/pdfpostertilerLPD")
+			{
+				`/bin/rm -rf "/Library/Printers/$vendor/filter/pdfpostertilerLPD"`;
+			}
+		}
+		else
+		{
+			$ppdDest = "$ppdPath";
+			$osTemp = "$vendorTemp/PPDs/SnowLeopard";
+			$ppdTemp = $osTemp;
+			$currentOS = "10.6";
+		
+			#bboqueco (07/01/2011): update $vendor folder ownership
+			if (-e "/Library/Printers/$vendor")
+			{
+				`sudo chown -R root:wheel "/Library/Printers/$vendor"`;
+			}
+			#update filter permissions
+			if (-e "/Library/Printers/$vendor/filter/pdfbookletorderLPD")
+			{
+				`sudo chown root:wheel "/Library/Printers/$vendor/filter/pdfbookletorderLPD"`;
+				`sudo chmod 755 "/Library/Printers/$vendor/filter/pdfbookletorderLPD"`;
+			}
+			if (-e "/Library/Printers/$vendor/filter/pdfpostertilerLPD")
+			{
+				`sudo chown root:wheel "/Library/Printers/$vendor/filter/pdfpostertilerLPD"`;
+				`sudo chmod 755 "/Library/Printers/$vendor/filter/pdfpostertilerLPD"`;
+			}
+		
+			if (-e "$vendorTemp/PDEs/10.5/JobAccounting.bundle")
+			{
+				#JobAccounting
+				InstallFile("JobAccounting.bundle", "$vendorTemp/PDEs/10.5", "/Library/Printers/$vendor/PDEs");
+				`/bin/rm -rf "$vendorTemp/PDEs"`;
+			}
+		
+			#cleanup remove other Oses for PPD
+			`/bin/rm -rf "$vendorTemp/PPDs/Leopard"`;
+			if (-e "/Library/Printers/$vendor/filter/pdfbookletorder")
+			{
+				`/bin/rm -rf "/Library/Printers/$vendor/filter/pdfbookletorder"`;
+			}
+			if (-e "/Library/Printers/$vendor/filter/pdfpostertiler")
+			{
+				`/bin/rm -rf "/Library/Printers/$vendor/filter/pdfpostertiler"`;
+			}
+		}
+	}
+    if (-e "/Library/Printers/$vendor")
+    {
+        `sudo chown -R root:wheel "/Library/Printers/$vendor"`;
+    }
+	#update filter folder and pdftocontone.bundle permission
+	`sudo chown root:wheel "/Library/Printers/$vendor/filter"`;
+	if (-e "/Library/Printers/$vendor/filter/CommandFilterEngine.bundle")
+	{
+		`sudo chown -R root:wheel "/Library/Printers/$vendor/filter/CommandFilterEngine.bundle"`;
+		`sudo chmod 755 "/Library/Printers/$vendor/filter/CommandFilterEngine.bundle"`;
+	}
+	#update pstopfax filter permission and ownership
+	if (-e "/Library/Printers/$vendor/filter/pstopsfax")
+	{
+		`sudo chown root:wheel "/Library/Printers/$vendor/filter/pstopsfax"`;
+		`sudo chmod 755 "/Library/Printers/$vendor/filter/pstopsfax"`;
+	}
+	if (-e "/Library/Printers/$vendor/filter/psoptionreroute")
+	{
+		`sudo chown root:wheel "/Library/Printers/$vendor/filter/psoptionreroute"`;
+		`sudo chmod 755 "/Library/Printers/$vendor/filter/psoptionreroute"`;
+	}
+	if (-e "/Library/Printers/$vendor/filter/pstopsprinter1")
+	{
+		`sudo chown root:wheel "/Library/Printers/$vendor/filter/pstopsprinter1"`;
+		`sudo chmod 755 "/Library/Printers/$vendor/filter/pstopsprinter1"`;
+	}
+	if (-e "/Library/Printers/$vendor/filter/pdfbookletorder")
+	{
+		`sudo chown root:wheel "/Library/Printers/$vendor/filter/pdfbookletorder"`;
+		`sudo chmod 755 "/Library/Printers/$vendor/filter/pdfbookletorder"`;
+	}
+	if (-e "/Library/Printers/$vendor/filter/pdfpostertiler")
+	{
+		`sudo chown root:wheel "/Library/Printers/$vendor/filter/pdfpostertiler"`;
+		`sudo chmod 755 "/Library/Printers/$vendor/filter/pdfpostertiler"`;
+	}
+	#update permission of JobRouting3
+	`sudo chown root:wheel "/Library/Printers/$vendor/PDEs/Job Routing 3.plugin"`;
+	if (-e "/Library/Printers/$vendor/PDEs/Job Routing 3.plugin")
+	{
+		`sudo chown -R root:wheel "/Library/Printers/$vendor/PDEs/Job Routing 3.plugin"`;
+		`sudo chmod 755 "/Library/Printers/$vendor/PDEs/Job Routing 3.plugin"`;
+	}
+	#update permission of JobRouting2
+	`sudo chown root:wheel "/Library/Printers/$vendor/PDEs/Job Routing 2.plugin"`;
+	if (-e "/Library/Printers/$vendor/PDEs/Job Routing 2.plugin")
+	{
+		`sudo chown -R root:wheel "/Library/Printers/$vendor/PDEs/Job Routing 2.plugin"`;
+		`sudo chmod 755 "/Library/Printers/$vendor/PDEs/Job Routing 2.plugin"`;
+	}
+	#update permission of JobAccounting.bundle
+	`sudo chown root:wheel "/Library/Printers/$vendor/PDEs/JobAccounting.bundle"`;
+	if (-e "/Library/Printers/$vendor/PDEs/JobAccounting.bundle")
+	{
+		`sudo chown -R root:wheel "/Library/Printers/$vendor/PDEs/JobAccounting.bundle"`;
+		`sudo chmod 755 "/Library/Printers/$vendor/PDEs/JobAccounting.bundle"`;
+	}
+	
+	#update profiles permission
+	if (-d "/Library/Printers/$vendor/Profiles")
+	{
+		`sudo chown -R root:wheel "/Library/Printers/$vendor/Profiles"`;
+	}
+	
+	#update printer icons permission
+	if (-d "/Library/Printers/$vendor/Printer Icons")
+	{
+		`sudo chown -R root:wheel "/Library/Printers/$vendor/Printer Icons"`;
+		`sudo chmod -R 644 "/Library/Printers/$vendor/Printer Icons/"`;
+		`sudo chmod 755 "/Library/Printers/$vendor/Printer Icons"`;
+	}
+    #remove Web Links folder
+    if (-d "/Applications/Lexmark/Weblinks")
+	{
+		`/bin/rm -rf "/Applications/Lexmark/Weblinks"`;
+    }
+
+	my $currentDir = `pwd`;
+	chomp($currentDir);
+	chdir("$ppdTemp");
+	our @files = `ls`;
+	
+	foreach my $ppdfile (@files) 
+	{
+		#chomp($ppdfile);
+		my @name = split(/\./,$ppdfile);
+		my $ppdName = $name[0];
+		chomp($ppdName);
+		print"PPD Name is $ppdName\n";
+		Install_PPDComponent($ppdName);
+	}
+	chdir("$currentDir");
+	
+	if ($currentOS eq "10.5")
+	{
+		#change /Library/Preferences ownership to users
+		`sudo chown $userName:admin "/Library/Preferences"`;
+	}
+		
+	#cleanup
+	`/bin/rmdir "$osTemp"`;
+	`/bin/rmdir "$vendorTemp/PPDs"`;
+	`/bin/rm -rf "$vendorTemp/10.5"`;
+	
+	`/bin/rmdir "/Library/Printers/$vendor/Temp"`;
+	
+	# check if CD installer was used
+	if (-e "/private/tmp/SetDuplex")
+	{
+		print("\nSetDuplex file found in /private/tmp\n");
+		
+		# get locale and duplex default value 
+		# from SetDuplex file created by CDLauncher
+		getDuplexValue;
+		
+		@locale = split(/\_/,$duplexValue);
+		$duplexValue = $locale[1];
+		
+		processPPD;
+	}
+
+	# Create symbolic links when the vendor directory is different with the manufacturer
+	# Rationale: PDE's and probably filters make use of the manufacturer specified in PPD
+	#      for their directory/file access purposes.
+	if ($manufacturerFolder ne $vendor)
+	{ 
+		print("removing link [/Library/Printers/$manufacturerFolder]");
+		`sudo unlink "/Library/Printers/$manufacturerFolder"`;
+
+		print("creating link [/Library/Printers/$manufacturerFolder] for [/Library/Printers/$vendor]");
+		`sudo ln -s "/Library/Printers/$vendor" "/Library/Printers/$manufacturerFolder"`;
+	}
+}
+
+###############################
+# createAlias
+# - Create Printer Utility alias -
+###############################
+sub createAlias()
+{
+	my $UserGuideApp = "User's Guide.app";
+	my $UserGuideAppDir = "/Applications/$vendor/User's Guide.app";
+	my $UserGuideDir = "/Library/Printers/$vendor/User Guide";
+	
+	print("Checking $UserGuideAppDir directory...\n");
+	if ( -e $UserGuideAppDir) {
+		print("Link of $UserGuideDir/$UserGuideApp directory already exists in /Applications/$vendor...\n");
+    }
+	else {
+  		print("Creating link of $UserGuideDir/$UserGuideApp directory in /Applications/$vendor...\n");
+		`sudo ln -s "$UserGuideDir/$UserGuideApp" "$UserGuideAppDir"`;
+	}
+}
+
+sub InstallFile
+{
+	my $bundleName = $_[0];
+	my $sourcePath = $_[1];
+	my $targetDir = $_[2];
+	
+	# check if installPath directory exist
+    if ( -d "$targetDir" )
+    {
+        # check if oour bundle already exist
+        if ( -d "$targetDir/$bundleName" )
+		{
+			my $oldPlist   = "$targetDir/$bundleName/Contents/Info.plist";
+			my $newPlist   = "$sourcePath/$bundleName/Contents/Info.plist";
+            my $currentVersion       = getFieldValue("$oldPlist", "CFBundleVersion" ); 
+            my $tobeInstalledVersion = getFieldValue("$newPlist", "CFBundleVersion" ); 
+			
+            print( "installedVersion -> $currentVersion\n" );
+            print( "tobeInstalledVersion -> $tobeInstalledVersion\n" );
+			
+            # check versions of the new and old bundles
+            if (CheckVersion($currentVersion, $tobeInstalledVersion, "<", 0, 3)) {
+                print "Replacing the old files with the new vesrion\n";
+                `/bin/rm -rf "$targetDir/$bundleName"`;
+                `/bin/mv -f "$sourcePath/$bundleName" "$targetDir"`;
+			}
+			else
+			{
+				# no need to install, latest version installed
+				print "Latest version already installed.\n";
+				`/bin/rm -rf "$sourcePath/$bundleName"`;
+			}
+        }
+        else
+        {
+            # our bundle is not installed
+            print "installing bundle..\n";
+            `/bin/mv -f "$sourcePath/$bundleName" "$targetDir"`;
+        }
+    }
+    else
+    {
+        # creating $vendor directory and installing the files
+        print "create new directory and install our files\n";
+        `/bin/mkdir "$targetDir"`;
+        `/bin/mv -f "$sourcePath/$bundleName" "$targetDir"`;
+    }
+}
+
+sub Install_PPDComponent
+{
+	my $name = $_[0];
+	print "ppdName $name";
+	@languages = 
+	( 'cs', 'da', 'de', 'el', 'en', 'es', 'fi', 'fr', 'hu', 'it', 'ja', 'ko', 'nl', 'no', 'pl', 'pt', 'ro', 'ru', 'sv', 'tr', 'zh_CN', 'zh_TW' );
+	
+	if (-e "$ppdDest/$name.ppd.gz") 
+	{
+		#get system version
+		my $PPDSystemVersion = getPPDVersion($ppdDest, "$name");
+		print "PPDSystemVersion is $PPDSystemVersion";
+		#get install version
+		my $PPDInstallVersion = getPPDVersion($ppdTemp , "$name");
+		print "PPDInstallVersion is $PPDInstallVersion";
+		if(CheckVersion($PPDSystemVersion, $PPDInstallVersion, "<", 0, 4)) {
+			print("Replacing system version with installer version...\n");
+			if ( ($currentOS eq "10.5") || ($currentOS eq "10.6") )
+			{
+				`/bin/rm -rf "$ppdPath/$name.gz"`;
+				`/bin/mv '$osTemp/$name.gz' '$ppdPath'`;
+				`sudo chown root:wheel "$ppdPath/$name.gz"`;
+				`sudo chmod 644 "$ppdPath/$name.gz"`;
+			}
+			else
+			{
+				foreach my $lang (@languages) 
+				{
+			    	if (-e "$osTemp/$lang/$name.gz")
+					{
+						`/bin/mv '$osTemp/$lang/$name.gz' '$ppdPath/$lang.lproj/'`;
+						`/bin/rmdir "$osTemp/$lang"`;
+						`sudo chown root:wheel "$ppdPath/$lang.lproj/$name.gz"`;
+						`sudo chmod 644 "$ppdPath/$lang.lproj/$name.gz"`;
+					}
+				}
+			}
+		}
+		else
+		{
+			# no need to install, latest version installed
+			print "Latest version already installed.\n";
+			if ( ($currentOS eq "10.5") || ($currentOS eq "10.6") )
+			{
+				if (-e "$osTemp/$name.gz")
+				{
+					`/bin/rm -rf "$osTemp/$name.gz"`;
+				}
+			}
+			else
+			{
+				foreach my $lang (@languages) 
+				{
+					if (-e "$osTemp/$lang/$name.gz")
+					{
+						`/bin/rm -rf "$osTemp/$lang/$name.gz"`;
+						`/bin/rmdir "$osTemp/$lang"`;
+					}
+				}
+			}
+		}	
+	}
+	else
+	{
+		# our bundle is not installed
+		print "installing bundle..\n";
+		
+		unless (-d "/Library/Printers/PPDs/Contents")
+		{
+			`mkdir -p -m 775 '/Library/Printers/PPDs/Contents'`;
+		}
+		
+		unless (-d "$ppdPath")
+		{
+			`mkdir -p -m 775 '$ppdPath'`;
+		}
+		if ( ($currentOS eq "10.5") || ($currentOS eq "10.6"))
+		{
+			`/bin/mv '$osTemp/$name.gz' '$ppdPath'`;
+			`sudo chown root:wheel "$ppdPath/$name.gz"`;
+			`sudo chmod 644 "$ppdPath/$name.gz"`;
+		}
+		else
+		{
+			foreach my $lang (@languages) 
+			{
+				if (-e "$osTemp/$lang/$name.gz")
+				{
+					`mkdir -p -m 775 '$ppdPath/$lang.lproj'`;
+				}
+				`/bin/mv '$osTemp/$lang/$name.gz' '$ppdPath/$lang.lproj/'`;
+				`/bin/rmdir "$osTemp/$lang"`;
+				`sudo chown root:wheel "$ppdPath/$lang.lproj/$name.gz"`;
+				`sudo chmod 644 "$ppdPath/$lang.lproj/$name.gz"`;
+			}
+		}
+	}
+}
+
+sub createProductDefinitionFile()
+{
+    my $modelName;
+    our @modelNames = ( $volumeName1, $volumeName);
+    
+	my $DRIVER_VERS  = "/Volumes/$modelName/$pkgName\_Print.pkg/Contents/Info.plist";
+    my $DRIVER_PATH  = "/Volumes/$modelName";
+	my $configPlistPath = "/Library/Printers/$vendor/Drivers/.Config";
+	my $productDefPath = "/Library/Printers/$vendor/Versioning/.Definitions";
+
+	our @modelNames = ( $volumeName1, $volumeName);
+	
+	foreach my $modelName (@modelNames) 
+	{
+		my $configPlist = "/Library/Printers/$vendor/Drivers/.Config/$modelName.bundle/Contents/Resources/$modelName.plist";
+		#get product code from config.plist
+		my $koshiSupport = getFieldValue("$configPlist", "TouchScreen Support" );
+		print( "The Koshi support VALUE is -> $koshiSupport\n" );
+		if($koshiSupport eq "true")
+		{
+			my $currentVersion;
+			if(-e "$versionToolPath/$koshiVersionTool")
+			{
+				if (-d "$DRIVER_PATH") {
+					$currentVersion = getFieldValue("$DRIVER_VERS", "CFBundleShortVersionString" );
+				}
+				
+				print( "The driver current version is -> $currentVersion\n" );
+				#get product code from config.plist
+				my $productCode = getFieldValue("$configPlist", "Product Code" );
+				print( "The product code is -> $productCode\n" );
+				#check if $versionToolPath exist before installing product definition file
+				#create /Library/Printers/$vendor/Versioning/Definitions folder
+				if(-d "$productDefPath/$productCode.def")
+				{
+					#check version of existing product def file
+					my $productDefSystemVersion = getProductDefinitionFileVersion($versionToolPath, "CmdProcessor", $productCode);
+					if(CheckVersion($productDefSystemVersion, $currentVersion, "<", 0, 3)) {
+						print("Replacing system version with installer version....\n");
+						`/bin/rm -rf '$productDefPath/$productCode.def'`;
+						MakeProductDefFile($currentVersion, $productCode, $productDefPath);
+					}
+					else
+					{
+						# no need to install, latest product definition file already installed
+						print "Latest product definition file already installed.\n";
+					}
+					
+				}
+				else
+				{
+					print("Create $productDefPath and install product definition file....\n");
+					mkdir($productDefPath);
+					MakeProductDefFile($currentVersion, $productCode, $productDefPath);
+				}	
+			}
+		}
+		else
+		{
+			print"This product does not support SmartSolution no need to create Product Definition File";
+		}
+	}
+}
+
+sub getProductDefinitionFileVersion
+{
+	my $path = $_[0];
+	my $tool = $_[1];
+	my $code = $_[2];
+	
+	my $dir = `pwd`;
+	chomp($dir);
+	chdir("$path");
+	
+	my $productVersion = `sudo ./$tool -model $code -command product_version`;
+	chdir("$dir");
+	
+	return $productVersion;
+}
+
+sub CheckVersion
+{
+	my $system_vers      = $_[0];
+    my $installer_vers   = $_[1];
+	my $operator         = $_[2];
+	my $min				 = $_[3];
+	my $max				 = $_[4];
+	
+	print "Comparing Versions\n";
+	if (!$operator) {
+        $operator = "==";
+    }
+	
+	my @theVersionArray = split(/\./, $system_vers);
+	chomp @theVersionArray;
+	my @theVersionArray2 = split(/\./, $installer_vers);
+	chomp @theVersionArray2;
+	
+	my $SysVersion;
+    my $InstVersion;
+	my $i = 0;
+	print "max $max\n";
+	for ($i = $min; $i < $max; $i++) 
+	{
+		if (($theVersionArray[$i] != $theVersionArray2[$i])) {
+            $SysVersion  = $theVersionArray[$i];
+			$InstVersion = $theVersionArray2[$i];
+			last;
+		}
+		
+    }
+	
+    my $expression = '$SysVersion ' . $operator . ' $InstVersion';
+	if( eval ($expression) ) {
+        return 1;
+		print "TRUE";
+    }
+	else {
+        return 0;
+		print "FALSE";
+    }
+}
+
+#########################################################
+# getFieldValue()
+# return the value of the given field of the Plist file.
+#########################################################
+sub getFieldValue
+{
+    my $path     = $_[0];
+    my $keyName  = $_[1];
+    my $result   = -1;
+	
+    print( "$path\n" );
+    print( "$keyName\n" );
+	
+    if (! -e $path) 
+    {
+        print("File path does not exist.\n");
+        return $result;
+    }
+	
+    my $oldSeperator = $/;
+    $/ = "";
+	
+    open( PLIST, "$path") || do 
+    {
+        print("File cannot be open.\n");
+        return $result;
+    };
+	
+    my $plistData = <PLIST>;
+    $plistData    =~ /<dict>(.*?)<\/dict>/gis;
+	
+    my @items = split(/<key>/, $plistData);
+	
+    shift @items;
+    my %hashData = ();
+	
+	foreach my $item (@items) 
+	{
+		$item =~ /(.*?)<\/key>.*?<(.*?)\/>/gis;
+		$item =~ /(.*?)<\/key>.*?<string>(.*?)<\/string>/gis;
+		$hashData{ $1 } = $2;
+	}
+    
+    print("Total hash count -> ". (keys %hashData) . "\n");
+    
+    close(PLIST);
+	
+    $/ = $oldSeperator;
+	
+    if (exists $hashData{$keyName} ) 
+    {
+        $result = $hashData{$keyName};
+        print("Keyname exist.\n");
+    }
+	
+    print "Returned result -> $result\n";
+	
+    return $result;
+}
+
+sub MakeProductDefFile
+{
+	our ($version, $productCode, $dest) = @_;
+	my $DEF_FILE = "+> $dest/$productCode.def";
+	
+	open DEF_FILE, $DEF_FILE or die "Can't open $DEF_FILE : $!\n";
+	print DEF_FILE <<EOF;
+    <?xml version="1.0" encoding="UTF-8"?>
+    <SWVersions>
+	<Schema>1.0</Schema>
+	<LexmarkSW>
+    <ReleaseNumber>1</ReleaseNumber>
+    <Components>
+    <Component>
+    <Name>Product</Name>
+    <Version>$version</Version>
+    </Component>
+    </Components>
+    <SupportedFeatures>
+    <Feature>
+    <Name>ScanToFile</Name>
+    <Version>1</Version>
+    </Feature>
+    </SupportedFeatures>
+	</LexmarkSW>
+</SWVersions>
+EOF
+	close DEF_FILE;
+}
+
+sub getPPDVersion
+{
+	my ( $path, $name) = @_;
+	`mkdir -p -m 775 '/tmp/PPDSystemvers'`;
+	`cp -p '$path/$name.gz' '/tmp/PPDSystemvers'`;
+	`gzip -d '/tmp/PPDSystemvers/$name.gz'`;
+	my $version = `grep -n "FileVersion" '/tmp/PPDSystemvers/$name' | /usr/bin/cut -f3 -d:`;
+	$version =~ s/\"//g;#"
+	print "version is $version";
+	#clean up
+	`/bin/rm -rf "/tmp/PPDSystemvers/$name"`;
+	`/bin/rm -rf "/tmp/PPDSystemvers/$name.gz"`;
+	return $version;	
+}
+
+sub getDirectoryContent
+{
+	my $path = $_[0];
+	opendir(DIRNAME, $path) || die("Cannot open directory");
+	our @theContents= readdir(DIRNAME);
+	closedir(DIRNAME);
+	print"DIRNAME contents are @theContents\n";
+	
+	return @theContents;
+}
+
+#############################################################
+# getDuplexValue
+# Get duplex value from SetDuplex file created by CDLauncher
+#############################################################
+sub getDuplexValue
+{
+	my $duplexFilepath = "/private/tmp/SetDuplex";
+	
+	tie my @DUPLEX, 'Tie::File', $duplexFilepath or die "can't open $duplexFilepath";
+	
+	foreach my $line (@DUPLEX)
+	{
+		if ($line =~ m/DuplexNoTumble/g)
+		{
+			print("\n[FOUND] $line\n");
+			$duplexValue = $line;
+			last;
+		}
+	}
+	untie @DUPLEX;
+	print("\nDuplex value from SetDuplex file $duplexValue\n");
+}
+
+#####################################################
+# processPPD
+# Check if system locale is supported and ppd exist.
+#####################################################
+sub processPPD
+{
+	$supportedFlag = "NO";
+	my $locFolder;
+	
+	our @supportedRegions = 
+	(
+	['AT'],	['BE'],	['BG'],	['CY'],	['CZ'],	['DK'],	['EE'],	['FI'],	['FR'],	['DE'],	['GR'],	['HU'],	['IE'],	['IT'],
+	['LV'],	['LT'],	['LU'],	['MT'],	['NL'],	['PL'],	['PT'],	['RO'],	['SK'],	['SI'],	['ES'],	['SE'],	['GB'],
+	);
+	
+	foreach my $loc (@supportedRegions)
+	{
+		#print("\nFrom supportedLocales array >> Code $$loc[0]");
+		#print("\nFrom supportedLocales array >> Country $$loc[1]");
+		chomp($$loc[0]);
+		chomp($$loc[1]);
+		chomp($locale[0]);
+		
+		if($$loc[0] eq $locale[0])
+		{
+			print("\n[Supported] $$loc[0] eq $locale[0]\n");
+			$supportedFlag = "YES";
+		}
+		else
+		{
+			print("\n[Not yet found] locale $locale[0]\n");
+		}
+	}
+	
+	print("\nCurrent region supported? $supportedFlag\n");
+	if ($supportedFlag eq "YES")
+	{
+		my $ppdPath = "/Library/Printers/PPDs/Contents/Resources";
+		print("\nppdPath value: $ppdPath\n");
+
+		if(-e "$ppdPath/$volumeName.gz")
+		{
+			print("\n[Exist] $ppdPath/$volumeName.gz\n");
+			updatePPDDuplex($ppdPath,$volumeName);
+		}
+	}
+}
+
+###########################################
+# updatePPDDuplex
+# Set DefaultDuplex key to DuplexNoTumble.
+###########################################
+sub updatePPDDuplex
+{
+	my $path = $_[0];
+	my $name = $_[1];
+	
+	print("\nppdPath $path/$name\n");
+	print("\nDecompressing PPD\n");
+	
+	#unzip ppd
+	`gunzip "$path/$name.gz"`;
+	`chmod 755 "$path/$name"`;
+	print("\nDone decompressing PPD\n");
+	
+	#find DefaultDuplex key and update value to DuplexNoTumble
+	print("\nduplex value $duplexValue\n");
+	
+	tie my @PPDFILE, 'Tie::File', "$path/$name" or die "can't open $path/$name";
+	
+	foreach my $line (@PPDFILE)
+	{
+		if ($line =~ m/DefaultDuplex/g)
+		{
+			print("\n[FOUND] $line\n");
+			$line =~ s/^\*DefaultDuplex\:.*/\*DefaultDuplex:\ $duplexValue/;
+			last;
+		}
+	}
+	
+	untie @PPDFILE;
+	
+	tie my @PPDFILE, 'Tie::File', "$path/$name" or die "can't open $path/$name";
+	
+	foreach my $line (@PPDFILE)
+	{
+		if ($line =~ m/DefaultToDuplexRegion/g)
+		{
+			print("\n[FOUND] $line\n");
+			$line =~ s/^\*LXDefaultToDuplexRegion\:.*/\*LXDefaultToDuplexRegion: True/;
+			last;
+		}
+	}
+	
+	untie @PPDFILE;
+	
+	#zip and copy new ppd
+	print("\nCompress back\n");
+	`chmod 644 "$path/$name"`;
+	`gzip -f -c "$path/$name" > "/private/tmp/$name.gz"`;
+	`cp -p "/private/tmp/$name.gz" $path`;
+	print("\nDone copying compressed file to $path\n");
+	
+	#delete old ppd
+	print("\nDelete old PPD\n");
+	`/bin/rm -rf "$path/$name"`;
+	`/bin/rm -rf "/private/tmp/$name.gz"`;
+}

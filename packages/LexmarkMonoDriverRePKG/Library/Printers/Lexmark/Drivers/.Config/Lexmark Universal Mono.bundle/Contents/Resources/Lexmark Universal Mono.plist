@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Package Prefix ModelName</key>
+	<string>Mono</string>
+	<key>Features</key>
+	<dict>
+		<key>PSSD Support</key>
+		<true/>
+	</dict>
+	<key>General</key>
+	<dict>
+		<key>Product Name</key>
+		<string>Lexmark Universal Mono</string>
+		<key>Product Year</key>
+		<string>2017</string>
+		<key>Vendor ID</key>
+		<integer>1085</integer>
+	</dict>
+	<key>Scan</key>
+	<dict>
+		<key>PPDName</key>
+		<string>_Mono_series</string>
+		<key>PrinterQueueName</key>
+		<string>Universal Mono</string>
+		<key>Specific Component Paths</key>
+		<array>
+			<string>/Library/Printers/Lexmark/Printer Icons/Lexmark Universal Mono.icns</string>
+			
+			<string>/Library/Printers/Lexmark/Configdefs/Lexmark Universal Mono.configdef</string>
+			<string>/Library/Application Support/Lexmark/Configdefs/Lexmark Universal Mono.configdef</string>
+			<string>/Library/Printers/Lexmark/Drivers/.Config/Universal Mono.plist</string>
+		</array>
+	</dict>
+</dict>
+</plist>
