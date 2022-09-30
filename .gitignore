@@ -2,3 +2,4 @@ secrets.txt
 *.pkg
 *.dmg
 *.app
+.DS_Store
