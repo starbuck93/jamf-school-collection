@@ -500,7 +500,7 @@
 				<key>USE_HFS+_COMPRESSION</key>
 				<false/>
 				<key>VERSION</key>
-				<string>1.0</string>
+				<string>1.1</string>
 			</dict>
 			<key>TYPE</key>
 			<integer>0</integer>
@@ -518,8 +518,94 @@
 		</dict>
 		<key>PROJECT_PRESENTATION</key>
 		<dict>
+			<key>BACKGROUND</key>
+			<dict>
+				<key>APPAREANCES</key>
+				<dict>
+					<key>DARK_AQUA</key>
+					<dict/>
+					<key>LIGHT_AQUA</key>
+					<dict/>
+				</dict>
+				<key>SHARED_SETTINGS_FOR_ALL_APPAREANCES</key>
+				<true/>
+			</dict>
 			<key>INSTALLATION_STEPS</key>
-			<array/>
+			<array>
+				<dict>
+					<key>ICPRESENTATION_CHAPTER_VIEW_CONTROLLER_CLASS</key>
+					<string>ICPresentationViewIntroductionController</string>
+					<key>INSTALLER_PLUGIN</key>
+					<string>Introduction</string>
+					<key>LIST_TITLE_KEY</key>
+					<string>InstallerSectionTitle</string>
+				</dict>
+				<dict>
+					<key>ICPRESENTATION_CHAPTER_VIEW_CONTROLLER_CLASS</key>
+					<string>ICPresentationViewReadMeController</string>
+					<key>INSTALLER_PLUGIN</key>
+					<string>ReadMe</string>
+					<key>LIST_TITLE_KEY</key>
+					<string>InstallerSectionTitle</string>
+				</dict>
+				<dict>
+					<key>ICPRESENTATION_CHAPTER_VIEW_CONTROLLER_CLASS</key>
+					<string>ICPresentationViewLicenseController</string>
+					<key>INSTALLER_PLUGIN</key>
+					<string>License</string>
+					<key>LIST_TITLE_KEY</key>
+					<string>InstallerSectionTitle</string>
+				</dict>
+				<dict>
+					<key>ICPRESENTATION_CHAPTER_VIEW_CONTROLLER_CLASS</key>
+					<string>ICPresentationViewDestinationSelectController</string>
+					<key>INSTALLER_PLUGIN</key>
+					<string>TargetSelect</string>
+					<key>LIST_TITLE_KEY</key>
+					<string>InstallerSectionTitle</string>
+				</dict>
+				<dict>
+					<key>ICPRESENTATION_CHAPTER_VIEW_CONTROLLER_CLASS</key>
+					<string>ICPresentationViewInstallationTypeController</string>
+					<key>INSTALLER_PLUGIN</key>
+					<string>PackageSelection</string>
+					<key>LIST_TITLE_KEY</key>
+					<string>InstallerSectionTitle</string>
+				</dict>
+				<dict>
+					<key>ICPRESENTATION_CHAPTER_VIEW_CONTROLLER_CLASS</key>
+					<string>ICPresentationViewInstallationController</string>
+					<key>INSTALLER_PLUGIN</key>
+					<string>Install</string>
+					<key>LIST_TITLE_KEY</key>
+					<string>InstallerSectionTitle</string>
+				</dict>
+				<dict>
+					<key>ICPRESENTATION_CHAPTER_VIEW_CONTROLLER_CLASS</key>
+					<string>ICPresentationViewSummaryController</string>
+					<key>INSTALLER_PLUGIN</key>
+					<string>Summary</string>
+					<key>LIST_TITLE_KEY</key>
+					<string>InstallerSectionTitle</string>
+				</dict>
+			</array>
+			<key>INTRODUCTION</key>
+			<dict>
+				<key>LOCALIZATIONS</key>
+				<array/>
+			</dict>
+			<key>LICENSE</key>
+			<dict>
+				<key>LOCALIZATIONS</key>
+				<array/>
+				<key>MODE</key>
+				<integer>0</integer>
+			</dict>
+			<key>README</key>
+			<dict>
+				<key>LOCALIZATIONS</key>
+				<array/>
+			</dict>
 			<key>TITLE</key>
 			<dict>
 				<key>LOCALIZATIONS</key>
@@ -532,6 +618,15 @@
 					</dict>
 				</array>
 			</dict>
+		</dict>
+		<key>PROJECT_REQUIREMENTS</key>
+		<dict>
+			<key>LIST</key>
+			<array/>
+			<key>RESOURCES</key>
+			<array/>
+			<key>ROOT_VOLUME_ONLY</key>
+			<false/>
 		</dict>
 		<key>PROJECT_SETTINGS</key>
 		<dict>
