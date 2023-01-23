@@ -19,53 +19,7 @@
 					<array>
 						<dict>
 							<key>CHILDREN</key>
-							<array>
-								<dict>
-									<key>CHILDREN</key>
-									<array>
-										<dict>
-											<key>BUNDLE_CAN_DOWNGRADE</key>
-											<false/>
-											<key>BUNDLE_POSTINSTALL_PATH</key>
-											<dict>
-												<key>PATH_TYPE</key>
-												<integer>0</integer>
-											</dict>
-											<key>BUNDLE_PREINSTALL_PATH</key>
-											<dict>
-												<key>PATH_TYPE</key>
-												<integer>0</integer>
-											</dict>
-											<key>CHILDREN</key>
-											<array/>
-											<key>GID</key>
-											<integer>80</integer>
-											<key>PATH</key>
-											<string>/Users/astarbuck/Downloads/nudge/Nudge_Suite/Applications/Utilities/Nudge.app</string>
-											<key>PATH_TYPE</key>
-											<integer>0</integer>
-											<key>PERMISSIONS</key>
-											<integer>493</integer>
-											<key>TYPE</key>
-											<integer>3</integer>
-											<key>UID</key>
-											<integer>0</integer>
-										</dict>
-									</array>
-									<key>GID</key>
-									<integer>80</integer>
-									<key>PATH</key>
-									<string>Utilities</string>
-									<key>PATH_TYPE</key>
-									<integer>2</integer>
-									<key>PERMISSIONS</key>
-									<integer>509</integer>
-									<key>TYPE</key>
-									<integer>2</integer>
-									<key>UID</key>
-									<integer>0</integer>
-								</dict>
-							</array>
+							<array/>
 							<key>GID</key>
 							<integer>80</integer>
 							<key>PATH</key>
@@ -228,24 +182,7 @@
 								</dict>
 								<dict>
 									<key>CHILDREN</key>
-									<array>
-										<dict>
-											<key>CHILDREN</key>
-											<array/>
-											<key>GID</key>
-											<integer>0</integer>
-											<key>PATH</key>
-											<string>/Users/astarbuck/Downloads/nudge/org.sasaustin.Nudge-LA.plist</string>
-											<key>PATH_TYPE</key>
-											<integer>0</integer>
-											<key>PERMISSIONS</key>
-											<integer>509</integer>
-											<key>TYPE</key>
-											<integer>3</integer>
-											<key>UID</key>
-											<integer>0</integer>
-										</dict>
-									</array>
+									<array/>
 									<key>GID</key>
 									<integer>0</integer>
 									<key>PATH</key>
@@ -261,24 +198,7 @@
 								</dict>
 								<dict>
 									<key>CHILDREN</key>
-									<array>
-										<dict>
-											<key>CHILDREN</key>
-											<array/>
-											<key>GID</key>
-											<integer>0</integer>
-											<key>PATH</key>
-											<string>/Users/astarbuck/Downloads/nudge/org.sasaustin.Nudge-LD.logger.plist</string>
-											<key>PATH_TYPE</key>
-											<integer>0</integer>
-											<key>PERMISSIONS</key>
-											<integer>509</integer>
-											<key>TYPE</key>
-											<integer>3</integer>
-											<key>UID</key>
-											<integer>0</integer>
-										</dict>
-									</array>
+									<array/>
 									<key>GID</key>
 									<integer>0</integer>
 									<key>PATH</key>
@@ -474,33 +394,63 @@
 									<array>
 										<dict>
 											<key>CHILDREN</key>
-											<array/>
+											<array>
+												<dict>
+													<key>CHILDREN</key>
+													<array>
+														<dict>
+															<key>BUNDLE_CAN_DOWNGRADE</key>
+															<false/>
+															<key>BUNDLE_POSTINSTALL_PATH</key>
+															<dict>
+																<key>PATH_TYPE</key>
+																<integer>0</integer>
+															</dict>
+															<key>BUNDLE_PREINSTALL_PATH</key>
+															<dict>
+																<key>PATH_TYPE</key>
+																<integer>0</integer>
+															</dict>
+															<key>CHILDREN</key>
+															<array/>
+															<key>GID</key>
+															<integer>0</integer>
+															<key>PATH</key>
+															<string>/Users/Shared/U2722DE Firmware/component.pkg/Dell/firmware/U2722DE/MonitorFirmwareUpdateUtility_U2722DE.app</string>
+															<key>PATH_TYPE</key>
+															<integer>0</integer>
+															<key>PERMISSIONS</key>
+															<integer>493</integer>
+															<key>TYPE</key>
+															<integer>3</integer>
+															<key>UID</key>
+															<integer>0</integer>
+														</dict>
+													</array>
+													<key>GID</key>
+													<integer>0</integer>
+													<key>PATH</key>
+													<string>U2722DE</string>
+													<key>PATH_TYPE</key>
+													<integer>2</integer>
+													<key>PERMISSIONS</key>
+													<integer>509</integer>
+													<key>TYPE</key>
+													<integer>2</integer>
+													<key>UID</key>
+													<integer>0</integer>
+												</dict>
+											</array>
 											<key>GID</key>
 											<integer>0</integer>
 											<key>PATH</key>
-											<string>/Users/Shared/MontereyUpdate.png</string>
+											<string>Dell</string>
 											<key>PATH_TYPE</key>
-											<integer>0</integer>
+											<integer>2</integer>
 											<key>PERMISSIONS</key>
-											<integer>436</integer>
+											<integer>509</integer>
 											<key>TYPE</key>
-											<integer>3</integer>
-											<key>UID</key>
-											<integer>0</integer>
-										</dict>
-										<dict>
-											<key>CHILDREN</key>
-											<array/>
-											<key>GID</key>
-											<integer>0</integer>
-											<key>PATH</key>
-											<string>/Users/Shared/SA-Seal-Color.png</string>
-											<key>PATH_TYPE</key>
-											<integer>0</integer>
-											<key>PERMISSIONS</key>
-											<integer>436</integer>
-											<key>TYPE</key>
-											<integer>3</integer>
+											<integer>2</integer>
 											<key>UID</key>
 											<integer>0</integer>
 										</dict>
@@ -559,39 +509,20 @@
 				<key>VERSION</key>
 				<integer>5</integer>
 			</dict>
-			<key>PACKAGE_SCRIPTS</key>
-			<dict>
-				<key>POSTINSTALL_PATH</key>
-				<dict>
-					<key>PATH</key>
-					<string>/Users/astarbuck/Downloads/nudge/Nudge_Suite/postinstall</string>
-					<key>PATH_TYPE</key>
-					<integer>0</integer>
-				</dict>
-				<key>PREINSTALL_PATH</key>
-				<dict>
-					<key>PATH</key>
-					<string>/Users/astarbuck/Downloads/nudge/Nudge_Suite/preinstall</string>
-					<key>PATH_TYPE</key>
-					<integer>0</integer>
-				</dict>
-				<key>RESOURCES</key>
-				<array/>
-			</dict>
 			<key>PACKAGE_SETTINGS</key>
 			<dict>
 				<key>AUTHENTICATION</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>CONCLUSION_ACTION</key>
 				<integer>0</integer>
 				<key>FOLLOW_SYMBOLIC_LINKS</key>
 				<false/>
 				<key>IDENTIFIER</key>
-				<string>org.sasaustin.pkg.nudge-pkg</string>
+				<string>org.sasaustin.pkg.U2722DE-Firmware</string>
 				<key>LOCATION</key>
 				<integer>0</integer>
 				<key>NAME</key>
-				<string>nudge-pkg</string>
+				<string>U2722DE-Firmware</string>
 				<key>OVERWRITE_PERMISSIONS</key>
 				<false/>
 				<key>PAYLOAD_SIZE</key>
@@ -608,7 +539,7 @@
 			<key>TYPE</key>
 			<integer>0</integer>
 			<key>UUID</key>
-			<string>A3EF114B-E654-4292-9E0D-A503B44D7E9D</string>
+			<string>B326A8A4-0196-498B-B43D-019F5C0E5DA2</string>
 		</dict>
 	</array>
 	<key>PROJECT</key>
@@ -717,7 +648,7 @@
 						<key>LANGUAGE</key>
 						<string>English</string>
 						<key>VALUE</key>
-						<string>nudge-pkg</string>
+						<string>U2722DE-Firmware</string>
 					</dict>
 				</array>
 			</dict>
@@ -911,7 +842,7 @@
 				</dict>
 			</array>
 			<key>NAME</key>
-			<string>nudge-pkg</string>
+			<string>U2722DE-Firmware</string>
 			<key>PAYLOAD_ONLY</key>
 			<false/>
 			<key>TREAT_MISSING_PRESENTATION_DOCUMENTS_AS_WARNING</key>

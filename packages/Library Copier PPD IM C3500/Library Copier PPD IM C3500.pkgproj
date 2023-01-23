@@ -22,46 +22,17 @@
 							<array>
 								<dict>
 									<key>CHILDREN</key>
-									<array>
-										<dict>
-											<key>BUNDLE_CAN_DOWNGRADE</key>
-											<false/>
-											<key>BUNDLE_POSTINSTALL_PATH</key>
-											<dict>
-												<key>PATH_TYPE</key>
-												<integer>0</integer>
-											</dict>
-											<key>BUNDLE_PREINSTALL_PATH</key>
-											<dict>
-												<key>PATH_TYPE</key>
-												<integer>0</integer>
-											</dict>
-											<key>CHILDREN</key>
-											<array/>
-											<key>GID</key>
-											<integer>80</integer>
-											<key>PATH</key>
-											<string>/Users/astarbuck/Downloads/nudge/Nudge_Suite/Applications/Utilities/Nudge.app</string>
-											<key>PATH_TYPE</key>
-											<integer>0</integer>
-											<key>PERMISSIONS</key>
-											<integer>493</integer>
-											<key>TYPE</key>
-											<integer>3</integer>
-											<key>UID</key>
-											<integer>0</integer>
-										</dict>
-									</array>
+									<array/>
 									<key>GID</key>
 									<integer>80</integer>
 									<key>PATH</key>
 									<string>Utilities</string>
 									<key>PATH_TYPE</key>
-									<integer>2</integer>
+									<integer>0</integer>
 									<key>PERMISSIONS</key>
-									<integer>509</integer>
+									<integer>493</integer>
 									<key>TYPE</key>
-									<integer>2</integer>
+									<integer>-1</integer>
 									<key>UID</key>
 									<integer>0</integer>
 								</dict>
@@ -76,6 +47,22 @@
 							<integer>509</integer>
 							<key>TYPE</key>
 							<integer>1</integer>
+							<key>UID</key>
+							<integer>0</integer>
+						</dict>
+						<dict>
+							<key>CHILDREN</key>
+							<array/>
+							<key>GID</key>
+							<integer>0</integer>
+							<key>PATH</key>
+							<string>bin</string>
+							<key>PATH_TYPE</key>
+							<integer>0</integer>
+							<key>PERMISSIONS</key>
+							<integer>493</integer>
+							<key>TYPE</key>
+							<integer>-1</integer>
 							<key>UID</key>
 							<integer>0</integer>
 						</dict>
@@ -104,7 +91,39 @@
 									<key>GID</key>
 									<integer>0</integer>
 									<key>PATH</key>
+									<string>Audio</string>
+									<key>PATH_TYPE</key>
+									<integer>0</integer>
+									<key>PERMISSIONS</key>
+									<integer>493</integer>
+									<key>TYPE</key>
+									<integer>1</integer>
+									<key>UID</key>
+									<integer>0</integer>
+								</dict>
+								<dict>
+									<key>CHILDREN</key>
+									<array/>
+									<key>GID</key>
+									<integer>0</integer>
+									<key>PATH</key>
 									<string>Automator</string>
+									<key>PATH_TYPE</key>
+									<integer>0</integer>
+									<key>PERMISSIONS</key>
+									<integer>493</integer>
+									<key>TYPE</key>
+									<integer>1</integer>
+									<key>UID</key>
+									<integer>0</integer>
+								</dict>
+								<dict>
+									<key>CHILDREN</key>
+									<array/>
+									<key>GID</key>
+									<integer>0</integer>
+									<key>PATH</key>
+									<string>ColorPickers</string>
 									<key>PATH_TYPE</key>
 									<integer>0</integer>
 									<key>PERMISSIONS</key>
@@ -157,6 +176,22 @@
 									<integer>0</integer>
 									<key>PERMISSIONS</key>
 									<integer>493</integer>
+									<key>TYPE</key>
+									<integer>1</integer>
+									<key>UID</key>
+									<integer>0</integer>
+								</dict>
+								<dict>
+									<key>CHILDREN</key>
+									<array/>
+									<key>GID</key>
+									<integer>80</integer>
+									<key>PATH</key>
+									<string>Fonts</string>
+									<key>PATH_TYPE</key>
+									<integer>0</integer>
+									<key>PERMISSIONS</key>
+									<integer>1021</integer>
 									<key>TYPE</key>
 									<integer>1</integer>
 									<key>UID</key>
@@ -228,24 +263,7 @@
 								</dict>
 								<dict>
 									<key>CHILDREN</key>
-									<array>
-										<dict>
-											<key>CHILDREN</key>
-											<array/>
-											<key>GID</key>
-											<integer>0</integer>
-											<key>PATH</key>
-											<string>/Users/astarbuck/Downloads/nudge/org.sasaustin.Nudge-LA.plist</string>
-											<key>PATH_TYPE</key>
-											<integer>0</integer>
-											<key>PERMISSIONS</key>
-											<integer>509</integer>
-											<key>TYPE</key>
-											<integer>3</integer>
-											<key>UID</key>
-											<integer>0</integer>
-										</dict>
-									</array>
+									<array/>
 									<key>GID</key>
 									<integer>0</integer>
 									<key>PATH</key>
@@ -261,24 +279,7 @@
 								</dict>
 								<dict>
 									<key>CHILDREN</key>
-									<array>
-										<dict>
-											<key>CHILDREN</key>
-											<array/>
-											<key>GID</key>
-											<integer>0</integer>
-											<key>PATH</key>
-											<string>/Users/astarbuck/Downloads/nudge/org.sasaustin.Nudge-LD.logger.plist</string>
-											<key>PATH_TYPE</key>
-											<integer>0</integer>
-											<key>PERMISSIONS</key>
-											<integer>509</integer>
-											<key>TYPE</key>
-											<integer>3</integer>
-											<key>UID</key>
-											<integer>0</integer>
-										</dict>
-									</array>
+									<array/>
 									<key>GID</key>
 									<integer>0</integer>
 									<key>PATH</key>
@@ -471,6 +472,71 @@
 							<array>
 								<dict>
 									<key>CHILDREN</key>
+									<array/>
+									<key>GID</key>
+									<integer>0</integer>
+									<key>PATH</key>
+									<string>etc</string>
+									<key>PATH_TYPE</key>
+									<integer>0</integer>
+									<key>PERMISSIONS</key>
+									<integer>493</integer>
+									<key>TYPE</key>
+									<integer>-1</integer>
+									<key>UID</key>
+									<integer>0</integer>
+								</dict>
+								<dict>
+									<key>CHILDREN</key>
+									<array/>
+									<key>GID</key>
+									<integer>0</integer>
+									<key>PATH</key>
+									<string>var</string>
+									<key>PATH_TYPE</key>
+									<integer>0</integer>
+									<key>PERMISSIONS</key>
+									<integer>493</integer>
+									<key>TYPE</key>
+									<integer>-1</integer>
+									<key>UID</key>
+									<integer>0</integer>
+								</dict>
+							</array>
+							<key>GID</key>
+							<integer>0</integer>
+							<key>PATH</key>
+							<string>private</string>
+							<key>PATH_TYPE</key>
+							<integer>0</integer>
+							<key>PERMISSIONS</key>
+							<integer>493</integer>
+							<key>TYPE</key>
+							<integer>-1</integer>
+							<key>UID</key>
+							<integer>0</integer>
+						</dict>
+						<dict>
+							<key>CHILDREN</key>
+							<array/>
+							<key>GID</key>
+							<integer>0</integer>
+							<key>PATH</key>
+							<string>sbin</string>
+							<key>PATH_TYPE</key>
+							<integer>0</integer>
+							<key>PERMISSIONS</key>
+							<integer>493</integer>
+							<key>TYPE</key>
+							<integer>-1</integer>
+							<key>UID</key>
+							<integer>0</integer>
+						</dict>
+						<dict>
+							<key>CHILDREN</key>
+							<array>
+								<dict>
+									<key>CHILDREN</key>
 									<array>
 										<dict>
 											<key>CHILDREN</key>
@@ -478,27 +544,61 @@
 											<key>GID</key>
 											<integer>0</integer>
 											<key>PATH</key>
-											<string>/Users/Shared/MontereyUpdate.png</string>
+											<string>Extensions</string>
 											<key>PATH_TYPE</key>
 											<integer>0</integer>
 											<key>PERMISSIONS</key>
-											<integer>436</integer>
+											<integer>493</integer>
 											<key>TYPE</key>
-											<integer>3</integer>
+											<integer>1</integer>
 											<key>UID</key>
 											<integer>0</integer>
 										</dict>
+									</array>
+									<key>GID</key>
+									<integer>0</integer>
+									<key>PATH</key>
+									<string>Library</string>
+									<key>PATH_TYPE</key>
+									<integer>0</integer>
+									<key>PERMISSIONS</key>
+									<integer>493</integer>
+									<key>TYPE</key>
+									<integer>1</integer>
+									<key>UID</key>
+									<integer>0</integer>
+								</dict>
+							</array>
+							<key>GID</key>
+							<integer>0</integer>
+							<key>PATH</key>
+							<string>System</string>
+							<key>PATH_TYPE</key>
+							<integer>0</integer>
+							<key>PERMISSIONS</key>
+							<integer>493</integer>
+							<key>TYPE</key>
+							<integer>1</integer>
+							<key>UID</key>
+							<integer>0</integer>
+						</dict>
+						<dict>
+							<key>CHILDREN</key>
+							<array>
+								<dict>
+									<key>CHILDREN</key>
+									<array>
 										<dict>
 											<key>CHILDREN</key>
 											<array/>
 											<key>GID</key>
 											<integer>0</integer>
 											<key>PATH</key>
-											<string>/Users/Shared/SA-Seal-Color.png</string>
+											<string>/private/etc/cups/ppd/Library_Copier.ppd</string>
 											<key>PATH_TYPE</key>
 											<integer>0</integer>
 											<key>PERMISSIONS</key>
-											<integer>436</integer>
+											<integer>420</integer>
 											<key>TYPE</key>
 											<integer>3</integer>
 											<key>UID</key>
@@ -532,6 +632,136 @@
 							<key>UID</key>
 							<integer>0</integer>
 						</dict>
+						<dict>
+							<key>CHILDREN</key>
+							<array>
+								<dict>
+									<key>CHILDREN</key>
+									<array/>
+									<key>GID</key>
+									<integer>0</integer>
+									<key>PATH</key>
+									<string>bin</string>
+									<key>PATH_TYPE</key>
+									<integer>0</integer>
+									<key>PERMISSIONS</key>
+									<integer>493</integer>
+									<key>TYPE</key>
+									<integer>-1</integer>
+									<key>UID</key>
+									<integer>0</integer>
+								</dict>
+								<dict>
+									<key>CHILDREN</key>
+									<array/>
+									<key>GID</key>
+									<integer>0</integer>
+									<key>PATH</key>
+									<string>include</string>
+									<key>PATH_TYPE</key>
+									<integer>0</integer>
+									<key>PERMISSIONS</key>
+									<integer>493</integer>
+									<key>TYPE</key>
+									<integer>-1</integer>
+									<key>UID</key>
+									<integer>0</integer>
+								</dict>
+								<dict>
+									<key>CHILDREN</key>
+									<array/>
+									<key>GID</key>
+									<integer>0</integer>
+									<key>PATH</key>
+									<string>lib</string>
+									<key>PATH_TYPE</key>
+									<integer>0</integer>
+									<key>PERMISSIONS</key>
+									<integer>493</integer>
+									<key>TYPE</key>
+									<integer>-1</integer>
+									<key>UID</key>
+									<integer>0</integer>
+								</dict>
+								<dict>
+									<key>CHILDREN</key>
+									<array>
+										<dict>
+											<key>CHILDREN</key>
+											<array/>
+											<key>GID</key>
+											<integer>0</integer>
+											<key>PATH</key>
+											<string>bin</string>
+											<key>PATH_TYPE</key>
+											<integer>0</integer>
+											<key>PERMISSIONS</key>
+											<integer>493</integer>
+											<key>TYPE</key>
+											<integer>-1</integer>
+											<key>UID</key>
+											<integer>0</integer>
+										</dict>
+									</array>
+									<key>GID</key>
+									<integer>0</integer>
+									<key>PATH</key>
+									<string>local</string>
+									<key>PATH_TYPE</key>
+									<integer>0</integer>
+									<key>PERMISSIONS</key>
+									<integer>493</integer>
+									<key>TYPE</key>
+									<integer>-1</integer>
+									<key>UID</key>
+									<integer>0</integer>
+								</dict>
+								<dict>
+									<key>CHILDREN</key>
+									<array/>
+									<key>GID</key>
+									<integer>0</integer>
+									<key>PATH</key>
+									<string>sbin</string>
+									<key>PATH_TYPE</key>
+									<integer>0</integer>
+									<key>PERMISSIONS</key>
+									<integer>493</integer>
+									<key>TYPE</key>
+									<integer>-1</integer>
+									<key>UID</key>
+									<integer>0</integer>
+								</dict>
+								<dict>
+									<key>CHILDREN</key>
+									<array/>
+									<key>GID</key>
+									<integer>0</integer>
+									<key>PATH</key>
+									<string>share</string>
+									<key>PATH_TYPE</key>
+									<integer>0</integer>
+									<key>PERMISSIONS</key>
+									<integer>493</integer>
+									<key>TYPE</key>
+									<integer>-1</integer>
+									<key>UID</key>
+									<integer>0</integer>
+								</dict>
+							</array>
+							<key>GID</key>
+							<integer>0</integer>
+							<key>PATH</key>
+							<string>usr</string>
+							<key>PATH_TYPE</key>
+							<integer>0</integer>
+							<key>PERMISSIONS</key>
+							<integer>493</integer>
+							<key>TYPE</key>
+							<integer>-1</integer>
+							<key>UID</key>
+							<integer>0</integer>
+						</dict>
 					</array>
 					<key>GID</key>
 					<integer>0</integer>
@@ -551,7 +781,7 @@
 				<key>PRESERVE_EXTENDED_ATTRIBUTES</key>
 				<false/>
 				<key>SHOW_INVISIBLE</key>
-				<false/>
+				<true/>
 				<key>SPLIT_FORKS</key>
 				<true/>
 				<key>TREAT_MISSING_FILES_AS_WARNING</key>
@@ -564,14 +794,12 @@
 				<key>POSTINSTALL_PATH</key>
 				<dict>
 					<key>PATH</key>
-					<string>/Users/astarbuck/Downloads/nudge/Nudge_Suite/postinstall</string>
+					<string>/Users/astarbuck/Untitled-8.sh</string>
 					<key>PATH_TYPE</key>
 					<integer>0</integer>
 				</dict>
 				<key>PREINSTALL_PATH</key>
 				<dict>
-					<key>PATH</key>
-					<string>/Users/astarbuck/Downloads/nudge/Nudge_Suite/preinstall</string>
 					<key>PATH_TYPE</key>
 					<integer>0</integer>
 				</dict>
@@ -581,17 +809,17 @@
 			<key>PACKAGE_SETTINGS</key>
 			<dict>
 				<key>AUTHENTICATION</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>CONCLUSION_ACTION</key>
 				<integer>0</integer>
 				<key>FOLLOW_SYMBOLIC_LINKS</key>
 				<false/>
 				<key>IDENTIFIER</key>
-				<string>org.sasaustin.pkg.nudge-pkg</string>
+				<string>org.sasaustin.pkg.LibraryCopierPPDIMC3500</string>
 				<key>LOCATION</key>
 				<integer>0</integer>
 				<key>NAME</key>
-				<string>nudge-pkg</string>
+				<string>Library Copier PPD IM C3500</string>
 				<key>OVERWRITE_PERMISSIONS</key>
 				<false/>
 				<key>PAYLOAD_SIZE</key>
@@ -608,7 +836,7 @@
 			<key>TYPE</key>
 			<integer>0</integer>
 			<key>UUID</key>
-			<string>A3EF114B-E654-4292-9E0D-A503B44D7E9D</string>
+			<string>635B3F29-D6E8-4553-9C81-DF752709594E</string>
 		</dict>
 	</array>
 	<key>PROJECT</key>
@@ -621,94 +849,8 @@
 		</dict>
 		<key>PROJECT_PRESENTATION</key>
 		<dict>
-			<key>BACKGROUND</key>
-			<dict>
-				<key>APPAREANCES</key>
-				<dict>
-					<key>DARK_AQUA</key>
-					<dict/>
-					<key>LIGHT_AQUA</key>
-					<dict/>
-				</dict>
-				<key>SHARED_SETTINGS_FOR_ALL_APPAREANCES</key>
-				<true/>
-			</dict>
 			<key>INSTALLATION_STEPS</key>
-			<array>
-				<dict>
-					<key>ICPRESENTATION_CHAPTER_VIEW_CONTROLLER_CLASS</key>
-					<string>ICPresentationViewIntroductionController</string>
-					<key>INSTALLER_PLUGIN</key>
-					<string>Introduction</string>
-					<key>LIST_TITLE_KEY</key>
-					<string>InstallerSectionTitle</string>
-				</dict>
-				<dict>
-					<key>ICPRESENTATION_CHAPTER_VIEW_CONTROLLER_CLASS</key>
-					<string>ICPresentationViewReadMeController</string>
-					<key>INSTALLER_PLUGIN</key>
-					<string>ReadMe</string>
-					<key>LIST_TITLE_KEY</key>
-					<string>InstallerSectionTitle</string>
-				</dict>
-				<dict>
-					<key>ICPRESENTATION_CHAPTER_VIEW_CONTROLLER_CLASS</key>
-					<string>ICPresentationViewLicenseController</string>
-					<key>INSTALLER_PLUGIN</key>
-					<string>License</string>
-					<key>LIST_TITLE_KEY</key>
-					<string>InstallerSectionTitle</string>
-				</dict>
-				<dict>
-					<key>ICPRESENTATION_CHAPTER_VIEW_CONTROLLER_CLASS</key>
-					<string>ICPresentationViewDestinationSelectController</string>
-					<key>INSTALLER_PLUGIN</key>
-					<string>TargetSelect</string>
-					<key>LIST_TITLE_KEY</key>
-					<string>InstallerSectionTitle</string>
-				</dict>
-				<dict>
-					<key>ICPRESENTATION_CHAPTER_VIEW_CONTROLLER_CLASS</key>
-					<string>ICPresentationViewInstallationTypeController</string>
-					<key>INSTALLER_PLUGIN</key>
-					<string>PackageSelection</string>
-					<key>LIST_TITLE_KEY</key>
-					<string>InstallerSectionTitle</string>
-				</dict>
-				<dict>
-					<key>ICPRESENTATION_CHAPTER_VIEW_CONTROLLER_CLASS</key>
-					<string>ICPresentationViewInstallationController</string>
-					<key>INSTALLER_PLUGIN</key>
-					<string>Install</string>
-					<key>LIST_TITLE_KEY</key>
-					<string>InstallerSectionTitle</string>
-				</dict>
-				<dict>
-					<key>ICPRESENTATION_CHAPTER_VIEW_CONTROLLER_CLASS</key>
-					<string>ICPresentationViewSummaryController</string>
-					<key>INSTALLER_PLUGIN</key>
-					<string>Summary</string>
-					<key>LIST_TITLE_KEY</key>
-					<string>InstallerSectionTitle</string>
-				</dict>
-			</array>
-			<key>INTRODUCTION</key>
-			<dict>
-				<key>LOCALIZATIONS</key>
-				<array/>
-			</dict>
-			<key>LICENSE</key>
-			<dict>
-				<key>LOCALIZATIONS</key>
-				<array/>
-				<key>MODE</key>
-				<integer>0</integer>
-			</dict>
-			<key>README</key>
-			<dict>
-				<key>LOCALIZATIONS</key>
-				<array/>
-			</dict>
+			<array/>
 			<key>TITLE</key>
 			<dict>
 				<key>LOCALIZATIONS</key>
@@ -717,19 +859,10 @@
 						<key>LANGUAGE</key>
 						<string>English</string>
 						<key>VALUE</key>
-						<string>nudge-pkg</string>
+						<string>Library Copier PPD IM C3500</string>
 					</dict>
 				</array>
 			</dict>
-		</dict>
-		<key>PROJECT_REQUIREMENTS</key>
-		<dict>
-			<key>LIST</key>
-			<array/>
-			<key>RESOURCES</key>
-			<array/>
-			<key>ROOT_VOLUME_ONLY</key>
-			<false/>
 		</dict>
 		<key>PROJECT_SETTINGS</key>
 		<dict>
@@ -911,7 +1044,7 @@
 				</dict>
 			</array>
 			<key>NAME</key>
-			<string>nudge-pkg</string>
+			<string>Library Copier PPD IM C3500</string>
 			<key>PAYLOAD_ONLY</key>
 			<false/>
 			<key>TREAT_MISSING_PRESENTATION_DOCUMENTS_AS_WARNING</key>

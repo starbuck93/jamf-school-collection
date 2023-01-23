@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>PayloadContent</key>
+	<array>
+		<dict>
+			<key>PayloadDescription</key>
+			<string>Configures all Nudge preferences</string>
+			<key>PayloadDisplayName</key>
+			<string>Nudge Preferences</string>
+			<key>PayloadIdentifier</key>
+			<string>com.github.macadmins.Nudge.preferences.example</string>
+			<key>PayloadType</key>
+			<string>com.github.macadmins.Nudge</string>
+			<key>PayloadUUID</key>
+			<string>35BA030A-4265-4E5D-B185-C446F28065B6</string>
+			<key>PayloadVersion</key>
+			<integer>1</integer>
+			<key>attemptToFetchMajorUpgrade</key>
+			<false/>
+			<key>osVersionRequirements</key>
+			<array>
+				<dict>
+					<key>aboutUpdateURL</key>
+					<string>https://docs.google.com/document/d/1FS7ep2P3ejK1DAq7TYhAFEPMYRt9fTONM2kY_OsjAMk/edit?usp=sharing</string>
+					<key>majorUpgradeAppPath</key>
+					<string>/Applications/Install macOS Monterey.app</string>
+					<key>requiredInstallationDate</key>
+					<date>2022-11-18T00:00:00Z</date>
+					<key>requiredMinimumOSVersion</key>
+					<string>12.6.1</string>
+					<key>targetedOSVersionsRule</key>
+    				<string>12</string>
+				</dict>
+			</array>
+			<key>userExperience</key>
+			<dict>
+				<key>allowedDeferralsUntilForcedSecondaryQuitButton</key>
+				<integer>30</integer>
+				<key>maxRandomDelayInSeconds</key>
+				<integer>10</integer>
+				<key>randomDelay</key>
+				<true/>
+			</dict>
+			<key>userInterface</key>
+			<dict>
+				<key>forceScreenShotIcon</key>
+				<true/>
+				<key>iconLightPath</key>
+				<string>/Users/Shared/SA-Seal-Color.png</string>
+				<key>screenShotLightPath</key>
+				<string>/Users/Shared/MontereyUpdate.png</string>
+				<key>simpleMode</key>
+				<false/>
+				<key>updateElements</key>
+				<array>
+					<dict>
+						<key>_language</key>
+						<string>en</string>
+						<key>actionButtonText</key>
+						<string>Update Device</string>
+						<key>informationButtonText</key>
+						<string>More Info</string>
+						<key>mainContentHeader</key>
+						<string>Your device will restart during this update</string>
+						<key>mainContentNote</key>
+						<string>Instructions</string>
+						<key>mainContentSubHeader</key>
+						<string></string>
+						<key>mainContentText</key>
+						<string>Please update your device soon! You may delay the upgrade today by selecting "Defer" in the bottom right corner.\n\nClick on the Screenshot below to see the correct upgrade method to upgrade to MacOS 12.6.1. Updates can take around 30 minutes to complete.\n\nClick on the More Info button in the bottom left to get help.</string>
+						<key>mainHeader</key>
+						<string>Your device requires a security update</string>
+						<key>primaryQuitButtonText</key>
+						<string>Later</string>
+						<key>secondaryQuitButtonText</key>
+						<string>I understand</string>
+						<key>subHeader</key>
+						<string></string>
+					</dict>
+				</array>
+			</dict>
+		</dict>
+	</array>
+	<key>PayloadDescription</key>
+	<string>Configures Nudge application to show the 12.6.1 upgrade path</string>
+	<key>PayloadDisplayName</key>
+	<string>Nudge Settings for Monterey</string>
+	<key>PayloadIdentifier</key>
+	<string>org.sasaustin.Nudge</string>
+	<key>PayloadOrganization</key>
+	<string>St. Andrew's Episcopal School Tech Dept</string>
+	<key>PayloadScope</key>
+	<string>System</string>
+	<key>PayloadType</key>
+	<string>Configuration</string>
+	<key>PayloadUUID</key>
+	<string>065FDA74-670B-40AD-AF2B-72C070A71001</string>
+	<key>PayloadVersion</key>
+	<integer>1</integer>
+</dict>
+</plist>
