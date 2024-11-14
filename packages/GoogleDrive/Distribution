@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<installer-gui-script minSpecVersion="2">
+    <title>Google Drive</title>
+    <background alignment="bottomleft" scaling="proportional" uti="public.png" file="logo.png"/>
+    <background-darkAqua alignment="bottomleft" scaling="proportional" uti="public.png" file="logo.png"/>
+    <options customize="never" require-scripts="true" hostArchitectures="x86_64,arm64"/>
+    <domains enable_anywhere="false" enable_currentUserHome="false" enable_localSystem="true"/>
+    <volume-check>
+        <allowed-os-versions>
+            <os-version min="10.15.7"/>
+        </allowed-os-versions>
+    </volume-check>
+    <choices-outline>
+        <line choice="installer_choice_1"/>
+        <line choice="installer_choice_2"/>
+        <line choice="installer_choice_3"/>
+        <line choice="installer_choice_4"/>
+        <line choice="installer_choice_5"/>
+        <line choice="installer_choice_6"/>
+    </choices-outline>
+    <choice id="installer_choice_1" title="Google Software Update" description="">
+        <pkg-ref id="com.google.pkg.Keystone"/>
+    </choice>
+    <choice id="installer_choice_2" title="Google Drive Intel" description="">
+        <pkg-ref id="com.google.drivefs.x86_64"/>
+    </choice>
+    <choice id="installer_choice_3" title="Google Drive Arm" description="">
+        <pkg-ref id="com.google.drivefs.arm64"/>
+    </choice>
+    <choice id="installer_choice_4" title="DFS FUSE INTEL" description="">
+        <pkg-ref id="com.google.drivefs.filesystems.dfsfuse.x86_64"/>
+    </choice>
+    <choice id="installer_choice_5" title="DFS FUSE ARM" description="">
+        <pkg-ref id="com.google.drivefs.filesystems.dfsfuse.arm64"/>
+    </choice>
+    <choice id="installer_choice_6" title="GSuite Shortcuts" description="">
+        <pkg-ref id="com.google.drivefs.shortcuts"/>
+    </choice>
+    <pkg-ref id="com.google.pkg.Keystone" auth="Root" version="1.3.18.216" installKBytes="0">#Google_Software_Update.pkg</pkg-ref>
+    <pkg-ref id="com.google.drivefs.arm64" active="is_arm()" auth="Root" version="78.0.1.0" installKBytes="405945">#GoogleDrive_arm64.pkg</pkg-ref>
+    <pkg-ref id="com.google.drivefs.x86_64" active="is_intel()" auth="Root" version="78.0.1.0" installKBytes="425980">#GoogleDrive_x86_64.pkg</pkg-ref>
+    <pkg-ref id="com.google.drivefs.shortcuts" auth="Root" version="78.0.1.0" installKBytes="174">#GoogleDriveShortcuts.pkg</pkg-ref>
+    <pkg-ref id="com.google.drivefs.filesystems.dfsfuse.arm64" active="is_arm()" auth="Root" version="45.3.0.0" installKBytes="184">#dfsfuse_arm64.pkg</pkg-ref>
+    <pkg-ref id="com.google.drivefs.filesystems.dfsfuse.x86_64" active="is_intel()" auth="Root" version="45.3.0.0" installKBytes="149">#dfsfuse_x86_64.pkg</pkg-ref>
+    <script><![CDATA[
+      const CPU_TYPE_MASK = 0x00ffffff;
+      const CPU_TYPE_X86 = 7;
+      const CPU_TYPE_ARM = 12;
+
+      function cputype()
+      {
+        return parseInt(system.sysctl('hw.cputype')) & CPU_TYPE_MASK;
+      }
+
+      function is_intel()
+      {
+        return cputype() === CPU_TYPE_X86;
+      }
+
+      function is_arm()
+      {
+        return cputype() === CPU_TYPE_ARM;
+      }
+    ]]></script>
+    <pkg-ref id="com.google.pkg.Keystone">
+        <bundle-version/>
+    </pkg-ref>
+    <pkg-ref id="com.google.drivefs.x86_64">
+        <bundle-version>
+            <bundle CFBundleShortVersionString="78.0" CFBundleVersion="78.0.1" id="com.google.drivefs" path="Google Drive.app"/>
+        </bundle-version>
+    </pkg-ref>
+    <pkg-ref id="com.google.drivefs.arm64">
+        <bundle-version>
+            <bundle CFBundleShortVersionString="78.0" CFBundleVersion="78.0.1" id="com.google.drivefs" path="Google Drive.app"/>
+        </bundle-version>
+    </pkg-ref>
+    <pkg-ref id="com.google.drivefs.filesystems.dfsfuse.x86_64">
+        <bundle-version>
+            <bundle CFBundleShortVersionString="45.3" CFBundleVersion="45.3.0" id="com.google.drivefs.filesystems.dfsfuse" path="dfsfuse.kext"/>
+        </bundle-version>
+    </pkg-ref>
+    <pkg-ref id="com.google.drivefs.filesystems.dfsfuse.arm64">
+        <bundle-version>
+            <bundle CFBundleShortVersionString="45.3" CFBundleVersion="45.3.0" id="com.google.drivefs.filesystems.dfsfuse" path="dfsfuse.kext"/>
+        </bundle-version>
+    </pkg-ref>
+    <pkg-ref id="com.google.drivefs.shortcuts">
+        <bundle-version>
+            <bundle CFBundleShortVersionString="78.0" CFBundleVersion="78.0.0" id="com.google.drivefs.shortcuts.slides" path="Google Slides.app"/>
+            <bundle CFBundleShortVersionString="78.0" CFBundleVersion="78.0.0" id="com.google.drivefs.shortcuts.sheets" path="Google Sheets.app"/>
+            <bundle CFBundleShortVersionString="78.0" CFBundleVersion="78.0.0" id="com.google.drivefs.shortcuts.docs" path="Google Docs.app"/>
+        </bundle-version>
+    </pkg-ref>
+</installer-gui-script>

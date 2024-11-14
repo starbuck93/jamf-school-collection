@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>PayloadContent</key>
+	<array>
+		<dict>
+			<key>BlockAboutAddons</key>
+			<false/>
+			<key>Bookmarks</key>
+			<array>
+				<dict>
+					<key>Folder</key>
+					<string>SAS Bookmarks</string>
+					<key>Placement</key>
+					<string>toolbar</string>
+					<key>Title</key>
+					<string>mySAS</string>
+					<key>URL</key>
+					<string>https://sasaustin.myschoolapp.com/</string>
+				</dict>
+			</array>
+			<key>DisplayBookmarksToolbar</key>
+			<true/>
+			<key>EnterprisePoliciesEnabled</key>
+			<true/>
+			<key>Extensions</key>
+			<dict>
+				<key>Install</key>
+				<array>
+					<string>https://addons.mozilla.org/firefox/downloads/file/4359936/ublock_origin-1.60.0.xpi</string>
+				</array>
+			</dict>
+			<key>PayloadDisplayName</key>
+			<string>Firefox</string>
+			<key>PayloadIdentifier</key>
+			<string>org.mozilla.firefox.158A99D5-47EC-41F5-B3D2-8F8C8346055B</string>
+			<key>PayloadType</key>
+			<string>org.mozilla.firefox</string>
+			<key>PayloadUUID</key>
+			<string>158A99D5-47EC-41F5-B3D2-8F8C8346055B</string>
+			<key>PayloadVersion</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>ExtensionInstallForcelist</key>
+			<array>
+				<string>cjpalhdlnbpafiamejdnhcphjbkeiagm</string>
+			</array>
+			<key>PayloadDisplayName</key>
+			<string>Microsoft Edge</string>
+			<key>PayloadIdentifier</key>
+			<string>com.microsoft.Edge.25F914C7-1C1D-4CD9-BD5F-D1D77EBB4D83</string>
+			<key>PayloadType</key>
+			<string>com.microsoft.Edge</string>
+			<key>PayloadUUID</key>
+			<string>25F914C7-1C1D-4CD9-BD5F-D1D77EBB4D83</string>
+			<key>PayloadVersion</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>ExtensionInstallForcelist</key>
+			<array>
+				<string>cjpalhdlnbpafiamejdnhcphjbkeiagm</string>
+			</array>
+			<key>ExtensionManifestV2Availability</key>
+			<integer>2</integer>
+			<key>PayloadDisplayName</key>
+			<string>Brave Browser</string>
+			<key>PayloadIdentifier</key>
+			<string>com.brave.Browser.DC34E733-2423-4D63-BA26-ED7B01A1AFEA</string>
+			<key>PayloadType</key>
+			<string>com.brave.Browser</string>
+			<key>PayloadUUID</key>
+			<string>DC34E733-2423-4D63-BA26-ED7B01A1AFEA</string>
+			<key>PayloadVersion</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>ExtensionInstallForcelist</key>
+			<array>
+				<string>cjpalhdlnbpafiamejdnhcphjbkeiagm</string>
+			</array>
+			<key>PayloadDisplayName</key>
+			<string>Google Chrome</string>
+			<key>PayloadIdentifier</key>
+			<string>com.google.Chrome.B51D9D02-4935-4F52-AFEF-8D8068CF8CEC</string>
+			<key>PayloadType</key>
+			<string>com.google.Chrome</string>
+			<key>PayloadUUID</key>
+			<string>B51D9D02-4935-4F52-AFEF-8D8068CF8CEC</string>
+			<key>PayloadVersion</key>
+			<integer>1</integer>
+		</dict>
+	</array>
+	<key>PayloadDisplayName</key>
+	<string>Browsers - add ublock origin and bookmarks</string>
+	<key>PayloadIdentifier</key>
+	<string>org.sasaustin.F9C60627-A715-4421-B9D4-3ADF8B6C9833</string>
+	<key>PayloadOrganization</key>
+	<string>St. Andrew's Episcopal School</string>
+	<key>PayloadType</key>
+	<string>Configuration</string>
+	<key>PayloadUUID</key>
+	<string>F9C60627-A715-4421-B9D4-3ADF8B6C9833</string>
+	<key>PayloadVersion</key>
+	<integer>1</integer>
+</dict>
+</plist>
