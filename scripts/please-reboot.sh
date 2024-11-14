@@ -1,5 +1,7 @@
 #!/bin/bash
 
+#writing my own swiftdialog script to get people to reboot. The example icon was of the Apple menu --> Restart... option highlighted 
+
 # Define variables
 DIALOG_PATH="/usr/local/bin/dialog"  # Update if SwiftDialog is installed elsewhere
 ICON_PATH="/Users/astarbuck/Pictures/SCR-20241113-jhoz.png"  # Example icon

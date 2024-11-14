@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# I needed a script to change the password if the current logged in user is a default account I created before moving to Jamf Connect so people can't use the Loaner account anymore
+# Turns out, there doesn't appear to be a way to change a user's password automatically, so I just pop up the System Settings dialog
+# I could also disable the account.........
+
+# pwpolicy -u username disableuser
+
+
 # Define variables
 USERNAME="loaner"
 DIALOG_PATH="/usr/local/bin/dialog"  # Update if SwiftDialog is installed elsewhere

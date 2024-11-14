@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 #https://gist.github.com/dimitardanailov/6acdd54ab67d5a25c0229b2fe5bbb42b
 #https://apple.stackexchange.com/questions/82472/what-steps-are-needed-to-create-a-new-user-from-the-command-line/84039#84039

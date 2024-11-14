@@ -3,12 +3,7 @@
 #
 #
 #
-# THIS SCRIPT IS NOT AN OFFICIAL PRODUCT OF JAMF SOFTWARE
-# AS SUCH IT IS PROVIDED WITHOUT WARRANTY OR SUPPORT
-#
-# BY USING THIS SCRIPT, YOU AGREE THAT JAMF SOFTWARE
-# IS UNDER NO OBLIGATION TO SUPPORT, DEBUG, OR OTHERWISE
-# MAINTAIN THIS SCRIPT
+# I'm not using this, either, since Jamf School packages works good enough 
 #
 ####################################################################################################
 

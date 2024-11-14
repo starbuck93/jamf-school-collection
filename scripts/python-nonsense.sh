@@ -1,4 +1,7 @@
 #!/bin/bash
+
+#Why do I have so many pythons in my system???
+
 which pip
 which pip3
 which python

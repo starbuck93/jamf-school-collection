@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# This script modifies a user's Dock on their first login by removing default apps and adding specific ones, while ensuring it only runs once per user account to prevent duplicate modifications.
+
 # Get the current username
 USERNAME=$(stat -f %Su /dev/console)
 

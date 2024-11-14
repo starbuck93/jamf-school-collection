@@ -1,3 +1,7 @@
+#!/bin/bash
+
+# I attempted to use this, but I would recommend using the built-in tools in Jamf School now.
+
 PRINTER="US_DML_DELL"
 DESCRIPTION="DML Dell B&W"
 IPADDR="10.64.0.172"
