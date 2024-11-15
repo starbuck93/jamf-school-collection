@@ -45,6 +45,8 @@
 				<true/>
 				<key>terminateApplicationsOnLaunch</key>
 				<false/>
+				<key>utilizeSOFAFeed</key>
+				<false/>
 			</dict>
 			<key>osVersionRequirements</key>
 			<array>
@@ -218,7 +220,7 @@ Q's? Email help@sasaustin.org or click "More Info" in the bottom left.</string>
 		</dict>
 	</array>
 	<key>PayloadDescription</key>
-	<string>Configures Nudge application up to major version 15.1.0</string>
+	<string>Configures Nudge application up to major version 15.1.0 without the SOFA feed</string>
 	<key>PayloadDisplayName</key>
 	<string>Nudge 15.1.0 Nov 21</string>
 	<key>PayloadIdentifier</key>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>PayloadContent</key>
+	<array>
+		<dict>
+			<key>PayloadDisplayName</key>
+			<string>Loginwindow</string>
+			<key>PayloadIdentifier</key>
+			<string>school.jamf.MDM.1ea72608-3f69-4f06-8946-ee4471fbfcbe.loginwindow.1917d1bf-995d-45ac-8506-6a43fa43809b</string>
+			<key>PayloadType</key>
+			<string>.GlobalPreferences</string>
+			<key>PayloadUUID</key>
+			<string>1917d1bf-995d-45ac-8506-6a43fa43809b</string>
+			<key>PayloadVersion</key>
+			<integer>1</integer>
+			<key>com.apple.autologout.AutoLogOutDelay</key>
+			<integer>1800</integer>
+		</dict>
+	</array>
+	<key>PayloadDescription</key>
+	<string>A simple mobileconfig to auto-logout users after 30 minutes.</string>
+	<key>PayloadDisplayName</key>
+	<string>Log Out After 30 Min Inactivity</string>
+	<key>PayloadIdentifier</key>
+	<string>org.sasaustin.inactivity-log-out-30</string>
+	<key>PayloadOrganization</key>
+	<string>St. Andrew's Episcopal School</string>
+	<key>PayloadRemovalDisallowed</key>
+	<true/>
+	<key>PayloadType</key>
+	<string>Configuration</string>
+	<key>PayloadUUID</key>
+	<string>cff2d6e9-9a2c-4b91-add0-974e944adf12</string>
+	<key>PayloadVersion</key>
+	<integer>1</integer>
+</dict>
+</plist>
