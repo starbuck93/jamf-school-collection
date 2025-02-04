@@ -26,8 +26,6 @@ MESSAGE="It appears your laptop has been powered on for $num $days. Please reboo
 
 if [ "$num" -gt 1 ]; then
 
-
-
     "$DIALOG_PATH" \
         --title "$TITLE" \
         --imagecaption "$MESSAGE" \
@@ -43,4 +41,3 @@ if [ "$num" -gt 1 ]; then
         reboot
     fi
 fi
-

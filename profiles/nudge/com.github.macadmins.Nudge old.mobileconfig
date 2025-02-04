@@ -45,8 +45,6 @@
 				<true/>
 				<key>terminateApplicationsOnLaunch</key>
 				<false/>
-				<key>utilizeSOFAFeed</key>
-				<false/>
 			</dict>
 			<key>osVersionRequirements</key>
 			<array>
@@ -83,9 +81,9 @@
 					<key>majorUpgradeAppPath</key>
 					<string></string>
 					<key>requiredInstallationDate</key>
-					<string>2024-11-21T23:59:59Z</string>
+					<string>2024-11-22T23:59:59Z</string>
 					<key>requiredMinimumOSVersion</key>
-					<string>15.1.0</string>
+					<string>15.1</string>
 					<key>targetedOSVersionsRule</key>
 					<string>default</string>
 				</dict>
@@ -220,11 +218,11 @@ Q's? Email help@sasaustin.org or click "More Info" in the bottom left.</string>
 		</dict>
 	</array>
 	<key>PayloadDescription</key>
-	<string>Configures Nudge application up to major version 15.1.0 without the SOFA feed</string>
+	<string>Configures Nudge application up to major version 15.1</string>
 	<key>PayloadDisplayName</key>
-	<string>Nudge 15.1.0 Nov 21</string>
+	<string>Nudge 15.1 Nov 22</string>
 	<key>PayloadIdentifier</key>
-	<string>org.sasaustin.Nudge</string>
+	<string>com.github.macadmins.Nudge.example</string>
 	<key>PayloadOrganization</key>
 	<string>Nudge</string>
 	<key>PayloadScope</key>
@@ -232,7 +230,7 @@ Q's? Email help@sasaustin.org or click "More Info" in the bottom left.</string>
 	<key>PayloadType</key>
 	<string>Configuration</string>
 	<key>PayloadUUID</key>
-	<string>3434ac98-3092-4c24-af02-26eca1ac7b7a</string>
+	<string>5E594630-850F-4C76-82C3-4BC41A2BB185</string>
 	<key>PayloadVersion</key>
 	<integer>1</integer>
 </dict>
