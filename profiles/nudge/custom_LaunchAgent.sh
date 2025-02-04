@@ -6,6 +6,10 @@ pathToPackage=$1
 targetLocation=$2
 targetVolume=$3
 
+#If a user is already logged in, then bootstrap. If no user is logged in, don't bootstrap.
+# get the currently logged in user
+currentUser=$( echo "show State:/Users/ConsoleUser" | scutil | awk '/Name :/ { print $3 }' )
+
 # As needed through script, logged in user is variable below
 loggedInUser=$( scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ && ! /loginwindow/ { print $3 }' )
 
@@ -14,49 +18,36 @@ userID=$( id -u "$loggedInUser" )
 
 # Define the path to the default Nudge LaunchAgent
 LAUNCHDAEMON_PATH="/Library/LaunchAgents/com.github.macadmins.Nudge.plist"
-# LAUNCHDAEMON_PATH="/Library/LaunchAgents/com.github.macadmins.Nudge.plist"
 
 # Step 1: Unload the existing LaunchAgent if it exists
-launchctl list | grep "com.github.macadmins.Nudge"; 
-if launchctl list | grep -q "com.github.macadmins.Nudge"; then
-    echo $?
+# global check if there is a user logged in
+if [ -z "$currentUser" -o "$currentUser" = "loginwindow" ]; then
+  echo "no user logged in, no need to bootout the LaunchAgent"
+else 
     echo "Unloading existing com.github.macadmins.Nudge..."
-    if ! launchctl unload $LAUNCHDAEMON_PATH; then
-      echo "Failed to unload existing macadmins Nudge agent."
-      exit 1
+    if ! launchctl bootout gui/"$userID" "$LAUNCHDAEMON_PATH"; then
+        echo "Failed to unload the new Nudge agent."
+        exit 1
     fi
 fi
 
 
 # Step 2: Replace the existing PLIST file with the new content
+
 #accomplishing this with the PKG
 
 # Step 3: Load the new LaunchAgent
 
-# to load:
-
-# to unload:
-# launchctl bootout gui/$userID /Library/LaunchAgents/some.company.plist
-#If a user is already logged in, then bootstrap. If no user is logged in, don't bootstrap.
-# get the currently logged in user
-currentUser=$( echo "show State:/Users/ConsoleUser" | scutil | awk '/Name :/ { print $3 }' )
 # global check if there is a user logged in
 if [ -z "$currentUser" -o "$currentUser" = "loginwindow" ]; then
   echo "no user logged in, no need to bootstrap the LaunchAgent"
 else 
-    # As needed through script, logged in user is variable below
-    loggedInUser=$( scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ && ! /loginwindow/ { print $3 }' )
-
-    # Get loggedInUser ID
-    userID=$( id -u "$loggedInUser" )
     echo "Loading the new com.github.macadmins.Nudge..."
     if ! launchctl bootstrap gui/"$userID" "$LAUNCHDAEMON_PATH"; then
         echo "Failed to load the new Nudge agent."
         exit 1
     fi
 fi
-
-
 
 
 echo "Script completed. Custom Nudge LaunchAgent has been updated and reloaded."
